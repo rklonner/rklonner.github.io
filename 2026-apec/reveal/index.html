@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>GitOps Visibility (Reveal.js)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <!-- Reveal.js CSS via CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/moon.css" id="theme">
+  <!-- Syntax highlight theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+
+    <style>
+      .reveal {
+        font-family: 'JetBrains Mono', 'Fira Mono', 'Menlo', 'Lato', Arial, sans-serif;
+      }
+      .reveal h1 { font-size: 2.2em; }
+      .reveal h2 { font-size: 1.4em; }
+      .reveal h3 { font-size: 1.1em; }
+      .reveal section, .reveal p, .reveal ul, .reveal ol, .reveal li { font-size: 0.9em; }
+      section img { max-width: 90vw; height: auto; }
+    </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Reveal.js loads markdown as slides here -->
+      <section data-markdown="slides.md"
+        data-separator="^---$"
+        data-separator-vertical="^--$"
+        data-separator-notes="^Note:"
+        data-charset="utf-8">
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/notes/notes.js"></script>
+  <script src="plugin/menu/menu.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMenu ],
+      menu: {
+        side: "left",           // or 'right', 'top', 'bottom'
+        width: '300px',          // fallback for custom width
+        numbers: true,           // display slide numbers in menu
+        titleSelector: 'h1, h2, h3', // headings to extract
+        hideMissingTitles: false,
+        openOnInit: false,       // do not open menu automatically
+        useTextContentForMissingTitles: true // Use text content for slides without headings
+      }
+    });
+  </script>
+</body>
+</html>
