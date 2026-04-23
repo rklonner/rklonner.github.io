@@ -239,6 +239,37 @@ argocd app diff my-app \
   --exit-code # Returns 1 if there is a diff
 
 ---
+```bash
+FROM registry.access.redhat.com/ubi10-minimal:latest
 
+RUN microdnf install -y curl git tar unzip && \
+    rm -rf /var/cache/yum/*
 
+# argocd CLI (optional)
+# only needed if using --render-method=cli
+RUN curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
+    install -m 555 argocd-linux-amd64 /usr/local/bin/argocd && \
+    rm argocd-linux-amd64 && \
+    argocd version || true
+
+# argocd-diff-preview CLI
+RUN curl -LJO https://github.com/dag-andersen/argocd-diff-preview/releases/download/v0.2.1/argocd-diff-preview-Linux-x86_64.tar.gz && \
+    tar -xvf argocd-diff-preview-Linux-x86_64.tar.gz && \
+    mv argocd-diff-preview /usr/local/bin && \
+    argocd-diff-preview --version
+
+# kubectl CLI
+# dependency of argocd-diff-preview, utilized by go k8s-client
+RUN curl -LO https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl && \
+    install -m 555 kubectl /usr/local/bin/kubectl && \
+    rm -f kubectl
+
+# oc CLI
+# utilized by runner to login to openshift with the argocd-diff-preview-access service account
+# e.g. oc login --server "$OPENSHIFT_SERVER" -token="$ARGOCD_DIFF_PREVIEW_OPENSHIFT_SA_TOKEN"
+RUN curl -L -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz && \
+    tar -xzvf /tmp/oc.tar.gz -C /usr/local/bin oc && \
+    chmod +x /usr/local/bin/oc && \
+    rm -f /tmp/oc.tar.gz
+```
 ---
