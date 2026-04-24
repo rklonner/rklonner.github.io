@@ -171,7 +171,7 @@ von Desired Cluster State - main vs change
 </div>
 
 ---
-# Gitb es dafür ein fertiges Tool?
+# Gibt es dafür ein fertiges Tool?
 
 ![argocd_diff_preview](assets/ch1_argocd_diff_preview_logo.png)
 <!-- .element: class="fragment" -->
@@ -431,13 +431,6 @@ diff:
 # Live Demo 
 
 ---
-# Use case generell aus doku
-
-Kustomize 
-Helm 
-Helm 
-
----
 # Use case kustomize Back to base refactoring 
 
 ---
@@ -447,19 +440,6 @@ Helm
 # Use case applicationset refactoring Produkt line
 
 Image
-
----
-
-# The Problem: Blind Merging
-- Developers push to Git
-- They pray it doesn't break the cluster
-- **Cognitive Load:** High 🤯
-
----
-
-# Image
-
-![image](assets/example-image.png)
 
 ---
 
@@ -473,60 +453,9 @@ Automatically post the cluster impact back to the Pull Request.
 
 ---
 
-# Implementation (Argo CD CLI)
-
-```bash
-# Get the diff between Git and Live Cluster
-argocd app diff my-app \
-  --revision feature-branch \
-  --exit-code # Returns 1 if there is a diff
-
----
-
-# Slide 1: Einführung
-Das ist der erste Text.
-
-- Punkt A <!-- .element: class="fragment" -->
-- Punkt B <!-- .element: class="fragment" -->
-
----
-
 # Slide 2: Animationen
 Dieser Block erscheint animiert.
 <!-- .element: class="fragment fade-up" -->
-
----
-
-# Slide 3: Code-Fragmente
-```javascript [1|3|5]
-// Schrittweise Code-Hervorhebung
-console.log("Start");
-let x = 10;
-x += 5;
-console.log(x);
-```
-
----
-
-# Code-Walkthrough Demo
-
-Hier erklären wir eine Funktion Schritt für Schritt.
-
-```javascript [1|3-4|6-9|11]
-function greet(name) {
-  // 1. Initialisierung
-  const greeting = "Hallo";
-  const message = `${greeting}, ${name}!`;
-
-  // 2. Logik-Check
-  if (!name) {
-    return "Wer da?";
-  }
-
-  return message;
-}
-```
-<!-- .element: class="fragment" -->
 
 ---
 
@@ -549,56 +478,3 @@ def add(a: int, b: int) -> int:
 <!-- .element: class="fragment" -->
 
 ---
-
-# Deep Dive: Große Klasse
-
-Wir springen durch die Logik dieser Klasse.
-
-```javascript [1-5|25-30|50-55|1-60]
-class UserManager {
-  constructor() {
-    this.users = [];
-    console.log("Init...");
-  }
-
-  // ... viele Zeilen Code ...
-
-  async fetchUsers() {
-    const response = await fetch('/api/users');
-    this.users = await response.json();
-    return this.users;
-  }
-
-  // ... noch mehr Code ...
-
-  findUserById(id) {
-    return this.users.find(u => u.id === id);
-  }
-
-  // Am Ende alles zeigen
-  logoutAll() {
-    this.users = [];
-  }
-}
-```
----
-
-### Die Funktionsweise im Detail
-
-*   **Automatisches Scrollen:** Wenn der Codeblock eine `max-height` hat (Standard in den meisten Themes), scrollt reveal.js die aktuell hervorgehobenen Zeilen automatisch in die Mitte des Sichtfelds.
-*   **Syntax `[1-5|25-30]`**: 
-    1. Klick: Fokus auf den Constructor (oben).
-    2. Klick: Sprung zur Mitte der Datei (`fetchUsers`).
-    3. Klick: Sprung zum Ende der Datei (`findUserById`).
-    4. Klick: Zoomt heraus und zeigt alles (`1-60`).
-
----
-
-# Test-Sprung
-```javascript [1-2|3|5]
-const eins = 1;
-const zwei = 2;
-const drei = 3;
-const vier = 4;
-const fünf = 5;
-```
