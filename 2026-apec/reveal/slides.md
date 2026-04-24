@@ -1,4 +1,4 @@
-# GitOps Visibility 
+# GitOps Visibility
 ## Präzise Argo CD diffs für jeden Pull Request 
 
 ---
@@ -53,44 +53,160 @@
 ---
 # Agenda
 
-1) das Problem 
-2) das Tool
-3) das Setup 
-4) Use cases 
----
-# Das Problem: git-diff vs rendered-diff
+* Das Problem
 
-* In PRs schauen wir auf diff der templating Sprache (DRY) , nicht wie es gerendert aussieht 
-* Ja man könnte diff manuell Ausführung, nicht praktikabel 
-* Selbst wenn, gibt es mit Argo CD noch einen layer vor dem Cluster (App of apps, Application Sets )
----
-# Problem 1
-Screenshot diff
+* Eine Lösung
+
+* Produktives Setup 
+
+* Use cases 
 
 ---
-# Problem 2
-Screenshot diff
+
+# Das Problem
 
 ---
-# Problem 3
-Screenshot diff
+
+# DRY in GitOps
+
+* **Application Manifests** → Helm | Kustomize
+
+* **ArgoCD (Application) Manifests** → ApplicationSets | App of apps
+
+* 👍 Wartbarkeit und Effizienz
+
+* 👎 Hohe Cognitive Load bei Änderungen → 🤯
+
 
 ---
-#  Die Lösung
 
-#### CI Prozess
-triggern eines CI-Prozesses wie Atlantis für Terraform 
+# git-diff | rendered-diff | reconciler-diff
 
-#### Rendern
-Lösen den Kontext auf von templating Sprache und Argo Manifest
+* Pull requests - git-diff der Templating Sprache (DRY), nicht gerendert!
 
-#### Diff Visualisierung
-von Desired Cluster Stage main vs change 
+* Dev lokal getestet, aber keine Info für Reviewer
+
+* Reviewer könnte rendered-diff manuell generieren → nicht praktikabel + fehleranfällig
+
+* Darüberhinaus gibt es mit Argo CD noch einen Layer vor dem Cluster (App of apps, Application Sets)
 
 ---
-# Argo CD Diff Preview 
+# Beispiel - Änderung Replicas
+
+Overlay greift nicht
+
+
+---
+
+# Beispiel - Änderung an ApplicationSet
+
+
+<div style="display: flex; align-items: center;" data-markdown>
+
+  <div style="flex: 3;"> <!-- 66% Breite -->
+
+  <!-- ![Breites Bild](assets/ch1_example_change_applicationset_portrait.png) -->
+  <img src="assets/ch1_example_change_applicationset_portrait.png">
+  </div>
+
+  <div style="flex: 2;"> <!-- 33% Breite -->
+
+  - Liefert das geänderte ApplicationSet alles wie vorher für staging und production aus?
+
+  - Dazu ist Argo CD Objekt Rendering notwendig → Argo Template + Kustomize Template 
+  </div>
+</div>
+
+---
+
+# Beispiel - Änderung an ApplicationSet
+
+#### Möglichkeiten für Diff-Generierung
+
+<div style="font-size: 0.6em;">
+
+| Ebene | Befehl | Was wird gerendert? | Fokus |
+| :--- | :--- | :--- | :--- |
+| **Template** | `argocd appset generate -o yaml` | `kind: Application` | Namen, Ziel-Cluster, Pfade & Parameter-Mapping. |
+| **App-Logik** | `argocd app manifests <NAME>` | `kind: Deployment`, etc. | Der tatsächliche Kubernetes-Code (nur wenn App existiert). |
+| **Tooling** | `helm template` / `kustomize build` | Kubernetes Ressourcen (lokal) | Validierung der reinen Helm/Kustomize-Logik ohne Argo CD. |
+| **Deep Dive** | `argocd-util app generate-manifests` | Finales Manifest (Argo-Style) | Simuliert das serverseitige Rendering inklusive Plugins. |
+</div>
+
+---
+
+# Lösungsansätze
+
+* Lokales diff von kustomize/helm
+
+* CI Pipeline Diff Funktionalität
+
+* Rendered Manifest Pattern
+
+* Argo CD Diff in UI
+
+---
+
+# Eine Lösung
+
+---
+#  Nötige Schritte
+
+<div class="fragment">
+
+## Einbinden in CI Prozess 
+triggern eines CI-Prozesses wie Atlantis für Terraform → nicht lokal
+</div>
+
+<div class="fragment">
+
+## Rendern aller Templating-Layer
+auflösen der Kontexte von Helm | Kustomize + Argo CD Manifest
+</div>
+
+<div class="fragment">
+
+## Diff Visualisierung
+von Desired Cluster State - main vs change 
+</div>
+
+---
+# Gitb es dafür ein fertiges Tool?
 
 ![argocd_diff_preview](assets/ch1_argocd_diff_preview_logo.png)
+<!-- .element: class="fragment" -->
+
+---
+
+# Funktionsweise Argo CD Diff Preview
+
+Bild github branches und tool
+Design philosophie
+
+---
+
+# Funktionsweise Argo CD Diff Preview
+
+Beispiel Call
+
+```bash [1-2|4-5|7-16]
+# Clone current state on main
+git clone https://github.com/repo base-branch --depth 1 -q 
+
+# Clone change branch
+git clone https://github.com/repo target-branch --depth 1 -q -b helm-example-3
+
+# Execute Argo CD Diff Preview (e.g. in a container)
+docker run \
+   --network host \
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   -v $(pwd)/output:/output \
+   -v $(pwd)/base-branch:/base-branch \
+   -v $(pwd)/target-branch:/target-branch \
+   -e TARGET_BRANCH=helm-example-3 \
+   -e REPO=dag-andersen/argocd-diff-preview \
+   dagandersen/argocd-diff-preview:v0.2.1
+```
 
 ---
 
@@ -104,24 +220,90 @@ Interaktives HTML als Pull Request Kommentar
 </iframe>
 
 ---
-# Funktionsweise 
-Image aus Doku was im manifest getauscht wird  für zwei branches
-Command argocd manifest ...
 
----
-# Ephemeral vs pre-installed
+# Funktionsweise Argo CD Diff Preview
 
 <div style="display: flex; align-items: center;" data-markdown>
 
-  <div style="flex: 3;"> <!-- 66% Breite -->
-
-  ![Breites Bild](assets/ch2_ephemeral_vs_preinstalled_mode.png)
+  <div style="flex: 3;"> 
+    <img src="assets/ch1_argocd_diff_preview_application_patching.png" 
+         style="max-height: 600px; width: auto; object-fit: contain;">
   </div>
 
-  <div style="flex: 2;"> <!-- 33% Breite -->
+  <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
 
-  - Punkt 1
-  - Punkt 2
+## 1. Application Manifests vorbereiten
+
+* Fetch
+* Select/Filter
+* Patch 
+  </div>
+</div>
+
+---
+
+# Funktionsweise Argo CD Diff Preview
+
+<div style="display: flex; align-items: center;" data-markdown>
+
+  <div style="flex: 3;"> 
+    <img src="assets/ch2_ephemeral_vs_preinstalled_mode.png" 
+         style="max-height: 600px; width: auto; object-fit: contain;">
+  </div>
+
+  <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
+
+## 2. Argo CD Instanz zum Rendern
+
+#### Ephemeral
+* Kind cluster erstellen
+* Argo CD deployen
+
+#### Pre-Installed
+* Bereitstellen einer eigenen Argo CD Instanz
+  </div>
+</div>
+
+---
+
+# Funktionsweise Argo CD Diff Preview
+
+<div style="display: flex; align-items: center;" data-markdown>
+
+  <div style="flex: 2;"> 
+    <img src="assets/ch1_argocd_diff_preview_application_rendering.png" 
+         style="max-height: 600px; width: auto; object-fit: contain;">
+  </div>
+
+  <div style="flex: 3;"> <!-- 33% Breite -->
+
+## 3. Argo CD Manifeste auflösen
+
+* Rendern der Applications für main und change in Argo CD
+* Applications erstellt aber Sync deaktiviert
+* Extrahieren der zwei Varianten
+  ```bash
+  argocd app manifests <app-name>
+  ```
+  </div>
+</div>
+
+---
+
+# Funktionsweise Argo CD Diff Preview
+
+<div style="display: flex; align-items: center;" data-markdown>
+
+  <div style="flex: 2;"> 
+    <img src="assets/ch1_argocd_diff_preview_application_rendering.png" 
+         style="max-height: 600px; width: auto; object-fit: contain;">
+  </div>
+
+  <div style="flex: 3;"> <!-- 33% Breite -->
+
+## 4. Diff
+
+* asdf
   </div>
 </div>
 
