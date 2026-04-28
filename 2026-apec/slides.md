@@ -20,7 +20,7 @@
     }
   </style>
 
-  # The speaker
+  # Über mich
 
 <div style="display: flex; align-items: flex-start; justify-content: flex-start; gap: 20px;" data-markdown>
   
@@ -53,17 +53,17 @@
 ---
 # Agenda
 
-* Das Problem
+* Kapitel 1: Das Problem
 
-* Eine Lösung
+* Kapitel 2: Eine Lösung
 
-* Produktives Setup 
+* Kapitel 3: Produktives Setup 
 
-* Use cases 
+* Kapitel 4: Use cases 
 
 ---
 
-# Das Problem
+# Kapitel 1: Das Problem
 
 ---
 
@@ -137,17 +137,25 @@ Overlay greift nicht
 
 # Lösungsansätze
 
-* Lokales diff von kustomize/helm
+* **Lokales diff von kustomize/helm**
+  * `helm template` oder `kustomize build` aufwendig
+  * `argocd app diff` bebntöigt Credentials in CI Pipeline
 
-* CI Pipeline Diff Funktionalität
+* **CI Pipeline Diff Funktionalität**
+  * könnte per Pipeline implentiert werden
+  * ist aber aufwending und unterschiedlich per Tool/Projekt
 
-* Rendered Manifest Pattern
+* **Rendered Manifest Pattern**
+  * zwei Branches/Repos um gerendertes Manifeste zu speichern
+  * zusätzliche Komplexität
 
-* Argo CD Diff in UI
+* **Argo CD Diff in UI**
+  * auto-sync muss deaktiviert sein
+  * Diff erst sichtbar wenn PR gemergt ist
 
 ---
 
-# Eine Lösung
+# Kapitel 2: Eine Lösung
 
 ---
 #  Nötige Schritte
@@ -180,8 +188,24 @@ von Desired Cluster State - main vs change
 
 # Funktionsweise Argo CD Diff Preview
 
-Bild github branches und tool
-Design philosophie
+<div style="display: flex; align-items: center; gap: 50px;" data-markdown>
+
+  <div style="flex: 1;"> 
+    <img src="assets/ch2_diff_live_state_vs_git_portrait.png"
+         style="max-height: 400px; width: auto; object-fit: contain;">
+
+  </div>
+
+  <div style="flex: 4; text-align: left;"> <!-- 33% Breite -->
+
+#### Vergleich Desired State von zwei Branches → reproduzierbar
+  * Nicht Live State (Temporärer Drift, Admission webhooks, Sync delays ...)
+  * GitOps == Auto-sync aktiv → Vergleich mit Desired State genügt
+
+#### Rendering mit Argo CD durchführen
+  * Funktionalität sehr umfangreich, nicht sinnvoll außerhalb zu reproduzieren
+  </div>
+</div>
 
 ---
 
@@ -190,10 +214,10 @@ Design philosophie
 Beispiel Call
 
 ```bash [1-2|4-5|7-16]
-# Clone current state on main
+# Get Argo CD Manists current state on main
 git clone https://github.com/repo base-branch --depth 1 -q 
 
-# Clone change branch
+# Get Argo CD Manists on target branch
 git clone https://github.com/repo target-branch --depth 1 -q -b helm-example-3
 
 # Execute Argo CD Diff Preview (e.g. in a container)
@@ -232,7 +256,7 @@ Interaktives HTML als Pull Request Kommentar
 
   <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
 
-## 1. Application Manifests vorbereiten
+### 1. Application Manifests vorbereiten
 
 * Fetch
 * Select/Filter
@@ -244,16 +268,16 @@ Interaktives HTML als Pull Request Kommentar
 
 # Funktionsweise Argo CD Diff Preview
 
-<div style="display: flex; align-items: center;" data-markdown>
+<div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
   <div style="flex: 3;"> 
     <img src="assets/ch2_ephemeral_vs_preinstalled_mode.png" 
          style="max-height: 600px; width: auto; object-fit: contain;">
   </div>
 
-  <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
+  <div style="flex: 3; text-align: left;"> <!-- 33% Breite -->
 
-## 2. Argo CD Instanz zum Rendern
+### 2. Argo CD Instanz zum Rendern
 
 #### Ephemeral
 * Kind cluster erstellen
@@ -268,19 +292,20 @@ Interaktives HTML als Pull Request Kommentar
 
 # Funktionsweise Argo CD Diff Preview
 
-<div style="display: flex; align-items: center;" data-markdown>
+<div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
   <div style="flex: 2;"> 
     <img src="assets/ch1_argocd_diff_preview_application_rendering.png" 
          style="max-height: 600px; width: auto; object-fit: contain;">
   </div>
 
-  <div style="flex: 3;"> <!-- 33% Breite -->
+  <div style="flex: 3; text-align: left;"> <!-- 33% Breite -->
 
-## 3. Argo CD Manifeste auflösen
+### 3. Argo CD Applications deployen
 
+* ApplicationSets und App of Apps auflösen → Applications
 * Rendern der Applications für main und change in Argo CD
-* Applications erstellt aber Sync deaktiviert
+* Applications erstellen aber Sync ist deaktiviert
 * Extrahieren der zwei Varianten
   ```bash
   argocd app manifests <app-name>
@@ -292,38 +317,107 @@ Interaktives HTML als Pull Request Kommentar
 
 # Funktionsweise Argo CD Diff Preview
 
-<div style="display: flex; align-items: center;" data-markdown>
+### 4. Diff erzeugen
+Vergleich Main vs Target Branch per Argo CD Application:
 
-  <div style="flex: 2;"> 
-    <img src="assets/ch1_argocd_diff_preview_application_rendering.png" 
-         style="max-height: 600px; width: auto; object-fit: contain;">
-  </div>
+* Hinzugefügte Applications - Neu im Target Branch
+* Entfernte Applications - Gelöscht im Target Branch
+* Geänderte Applications - Geändert zwischen Branches
+* Unveränderte Applications - Unverändert (gefiltert im Output)
 
-  <div style="flex: 3;"> <!-- 33% Breite -->
+<div style="font-size: 0.6em;">
 
-## 4. Diff
-
-* asdf
-  </div>
+| File | Description |
+| :--- | :--- |
+| `./output/diff.md` | Markdown diff ... |
+| `./output/diff.html` | HTML diff ... |
 </div>
 
 ---
 
-# Pre-installed
-
+# Kapitel 3: Produktives Setup
 
 ---
 
-# Performance 
+# Fokus auf
+<div class="fragment">
 
-Ephemeral vs pre-installed
+## Performance
+für Feedback im PR (Sekunden)
+</div>
 
+<div class="fragment">
+
+## Security
+produktiven Cluster absichern, CI Zugriffe
+</div>
+
+<div class="fragment">
+
+## Maintenance | Operations
+Aufwand minimieren
+</div>
+---
+
+# Argo CD Pre-installed
+
+![argocd_diff_preview](assets/ch3_pre_installed_argocd2.png)
+---
+
+# Argo CD Pre-installed
+
+<div style="flex: 3; text-align: left;">
+
+### Ephemeral
+
+* ✅ Zero setup
+* ✅ Complete isolation
+* ✅ Works with any CI/CD (even works on your local machine)
+* ❌ Slow (~60 second overhead per run, ~80 seconds in total)
+* ❌ Resource-intensive (creates a new cluster for each run)
+
+
+### Pre-Installed
+* ✅ Fast execution (eliminates ~60s overhead, ~25 seconds in total)
+* ✅ Network isolation (No need to expose your cluster to the internet)
+* ✅ No cluster credentials in CI/CD pipeline (using) service account from within the cluster and Argo CD has all the credentials)
+* ❌ Complex (requires self-hosted runners + dedicated Argo CD)
+</div>
+---
+
+# Argo CD Pre-installed
+
+<div style="display: flex; align-items: center; gap: 50px;" data-markdown>
+
+  <div style="flex: 1;" data-markdown> <!-- .element: class="fragment fade-up" -->
+    <img src="assets/ch3_argo_in_jail.png" style="max-height: 600px; width: auto; object-fit: contain;">
+
+#### Namespaced 
+#### (nicht cluster-wide)
+  </div>
+  <div style="flex: 3; text-align: left;"> <!-- 33% Breite -->
+
+## Openhift GitOps Operator
+* Installieren eigene Instanz auch deklarativ
+* Gleiche Version wie produtives Argo CD
+* Upgrades passieren gleichzeitig
+
+## Configuration via GitOps
+
+* Service Account (Gitlab runner access)
+* RBAC Service Account
+* SSH known hosts, TLS certs
+* Repo Credential Templates (VSO|ESO)
+* Cluster Credentials (VSO|ESO)
+...
+</div>
 ---
 
 # Gitlab Runner image
 
+Argo CD Diff Preview binary (kein DinD) + Dependencies
 
-```bash [6-11|13-17|19-23|25-31]
+```bash [6|13|19|25]
 FROM registry.access.redhat.com/ubi10-minimal:latest
 
 RUN microdnf install -y curl git tar unzip && \
@@ -361,7 +455,9 @@ RUN curl -L -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clie
 
 # Gitlab pipeline template
 
-```yaml []
+zentrales, versioniertes Template
+
+```yaml [9|10-16|19-25|27-29|31-33|35-41|49-54|56-60|63-64]
 default:
   tags:
     - openshift-gitlab-runner
@@ -372,22 +468,39 @@ stages:
 diff:
   image: <your-registry>/argocd-diff-preview-runner
   variables:
-    OPENSHIFT_SERVER: "<your-openshift-server-url>"
+    ARGO_MANIFEST_REPO: ""
+    ARGO_MANIFEST_REPO_TARGET_BRANCH: ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+    K8S_MANIFEST_BRANCH: ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+    ARGOCD_DIFF_PREVIEW_FLAGS: ""  # e.g. "--debug"
+    OPENSHIFT_CLUSTER: "<your-openshift-cluster-url>"
     GITLAB_TOKEN: $GITLAB_PAT
   script:
     - echo "******** Running analysis ********"
-    - git clone ${CI_REPOSITORY_URL} base-branch --depth 1 -q 
-    - git clone ${CI_REPOSITORY_URL} target-branch --depth 1 -q -b ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+    # Repo location of the ArgoCD ApplicationSet manifests
+    - |
+      if [ -z "$ARGO_MANIFEST_REPO" ]; then
+        ARGO_MANIFEST_REPO=${CI_REPOSITORY_URL}
+      else
+        ARGO_MANIFEST_REPO="https://$ARGOCD_DIFF_PREVIEW_REPO_USER:$ARGOCD_DIFF_PREVIEW_REPO_PASSWORD@$ARGO_MANIFEST_REPO"
+      fi
+
+    - git clone ${ARGO_MANIFEST_REPO} base-branch --depth 1  -q
+    - git clone ${ARGO_MANIFEST_REPO} target-branch --depth 1 -q \
+      -b ${ARGO_MANIFEST_REPO_TARGET_BRANCH}
+
     # initiate kubeconfig creation that argocd-diff-preview can use
-    - oc login --server "$OPENSHIFT_SERVER" --token="$ARGOCD_DIFF_PREVIEW_OPENSHIFT_SA_TOKEN"
+    - oc login --server "$OPENSHIFT_CLUSTER" \
+               --token="$ARGOCD_DIFF_PREVIEW_OPENSHIFT_SA_TOKEN"
     - |
       argocd-diff-preview \
         --repo ${CI_MERGE_REQUEST_PROJECT_PATH} \
         --base-branch main \
-        --target-branch ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} \
-        --argocd-namespace=argocd-diff-preview \
+        --target-branch ${K8S_MANIFEST_BRANCH} \
+        --argocd-namespace=inh-devops-argocd-diff-preview \
+        ${ARGOCD_DIFF_PREVIEW_FLAGS} \
         --create-cluster=false
     - |
+      # Deleting old PR comment if exists
       jq --null-input --rawfile msg $(pwd)/output/diff.md '{body: $msg}' > pr_comment.json
       NOTE_ID=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/notes" | \
@@ -400,7 +513,7 @@ diff:
               --url "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/notes/${NOTE_ID}"
       fi
 
-      echo "Adding new comment..."
+      echo "Adding new PR comment..."
       curl --silent --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
           --header "Content-Type: application/json" \
           --url "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/notes" \
@@ -413,28 +526,52 @@ diff:
 
 ---
 
-# Operations
-* Argo CD Operator (same as prod)
-* Deploed over Argo itself
-* Credential Templates as VSO/ESO secrets to integrate repo access
-* Gitlab runner mit Argo CD diff Preview binary 
-* Gitlab templates for central and optional pipeline Integration 
+# Gitlab pipeline - Diff Preview Aktivierung
+
+* opt-in (Aktivierung pro Pipeline)
+* Minimale Konfiguration
+
+```yaml
+stages:
+  - argocd-diff-preview
+include:
+  - project: 'gitlab-ci-templates'
+    ref: 'main'
+    file: 'argocd-diff-preview-merge-request.yml'
+diff:
+  extends: .template-argocd-diff-preview
+  stage: argocd-diff-preview
+  variables:
+    ARGOCD_DIFF_PREVIEW_FLAGS: "--debug  --max-diff-length 131072"
+```
 
 ---
-# Security 
 
-* Namespace scoped Argo CD instance
-    * No workloads can be deployed outside the argocd-diff-preview namespace
-* Argo CD diff Preview binary (no DinD), no privileged mode
+# Diff Preview Repository Varianten
+
+Platform repo/GitOps repo + Application templates (helm/kustomize)
+Platform repo/GitOps repo | Application templates (helm/kustomize)
+
+Creating branches in both or only one of them
+
+
+---
+
+# Gitlab Runner execution time
+
+* Gitlab Runner ~10-20 Sekunden
+* Diff Preview ~10 Sekunden
+
+![](assets/ch3_gitlab_runner_performance.png)
 
 ---
 # Live Demo 
 
 ---
-# Use case kustomize Back to base refactoring 
+# Use case Kustomize back-to-base refactoring 
 
 ---
-# Use case Helm envs to value hierarchy rafctoring
+# Use case Helm envs to value hierarchy refactoring
 
 ---
 # Use case applicationset refactoring Produkt line
@@ -443,38 +580,4 @@ Image
 
 ---
 
-# The Solution: Diff Previews
-Automatically post the cluster impact back to the Pull Request.
-
-**How it works:**
-1. Git Webhook triggers CI
-2. `argocd app diff --revision $PR_BRANCH`
-3. Post output as PR Comment
-
----
-
-# Slide 2: Animationen
-Dieser Block erscheint animiert.
-<!-- .element: class="fragment fade-up" -->
-
----
-
-# Animierter Code-Vergleich
-
-Du kannst auch den Code selbst als Fragment behandeln.
-
-### Version 1 (Basis)
-```python
-def add(a, b):
-    return a + b
-```
-<!-- .element: class="fragment" -->
-
-### Version 2 (Mit Typen)
-```python
-def add(a: int, b: int) -> int:
-    return a + b
-```
-<!-- .element: class="fragment" -->
-
----
+# Zero-Change PR
