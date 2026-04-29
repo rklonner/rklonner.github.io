@@ -93,8 +93,60 @@
 ---
 # Beispiel - Änderung Replicas
 
-Overlay greift nicht
+Task: Erhöhung der Replicas für produktiv (Kostis Kapelonis)
+<!-- 
+<img src="assets/ch1_example_change_replica1.png" style="max-height: 400px; width: auto; object-fit: contain;"> -->
 
+<div class="r-stack">
+  <img
+    class="fragment"
+    src="assets/ch1_example_change_replica1a.png"
+    style="max-height: 400px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch1_example_change_replica2.png"
+    style="max-height: 400px; width: auto; object-fit: contain;"
+  />
+  <div class="fragment" style="width: 70%; min-width: 400px;">
+
+```bash
+  kustomize build envs/prod-eu/
+```
+
+  ```yaml []
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    codefresh.io/app: simple-go-app
+  name: prod-eu-simple-deployment
+  namespace: prod
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: trivial-go-web-app
+  ```
+  </div>
+  <img
+    class="fragment"
+    src="assets/ch1_example_change_replica3.png"
+    style="max-height: 400px; width: auto; object-fit: contain;"
+  />
+</div>
+---
+
+# Beispiel - Änderung Replicas
+
+#### Möglichkeiten für Diff-Generierung in der CLI
+
+<div style="font-size: 0.6em;">
+
+| Ebene | Befehl | Was wird gerendert? | Fokus |
+| :--- | :--- | :--- | :--- |
+| **Tooling** | `helm template` / `kustomize build` | Kubernetes Ressourcen (lokal) | Validierung der reinen Helm/Kustomize-Logik ohne Argo CD. |
+</div>
 
 ---
 
@@ -121,7 +173,7 @@ Overlay greift nicht
 
 # Beispiel - Änderung an ApplicationSet
 
-#### Möglichkeiten für Diff-Generierung
+#### Möglichkeiten für Diff-Generierung in der CLI
 
 <div style="font-size: 0.6em;">
 
@@ -135,29 +187,43 @@ Overlay greift nicht
 
 ---
 
-# Lösungsansätze
-
-* **Lokales diff von kustomize/helm**
-  * `helm template` oder `kustomize build` aufwendig
-  * `argocd app diff` bebntöigt Credentials in CI Pipeline
-
-* **CI Pipeline Diff Funktionalität**
-  * könnte per Pipeline implentiert werden
-  * ist aber aufwending und unterschiedlich per Tool/Projekt
-
-* **Rendered Manifest Pattern**
-  * zwei Branches/Repos um gerendertes Manifeste zu speichern
-  * zusätzliche Komplexität
-
-* **Argo CD Diff in UI**
-  * auto-sync muss deaktiviert sein
-  * Diff erst sichtbar wenn PR gemergt ist
-
----
-
 # Kapitel 2: Eine Lösung
 
 ---
+
+# Lösungsansätze
+
+<ul>
+<li class="fragment">
+
+**Lokales diff von kustomize/helm**
+  * `helm template` oder `kustomize build` aufwendig
+  * `argocd app diff` bebntöigt Credentials in CI Pipeline
+</li>
+
+<li class="fragment">
+
+**CI Pipeline Diff Funktionalität**
+  * per Pipeline 2x rendern (`helm template | kustomize build`)
+  * ist aber aufwending und unterschiedlich per Tool/Projekt
+</li>
+
+<li class="fragment">
+
+**Argo CD Diff in UI**
+  * auto-sync muss deaktiviert sein
+  * Diff erst sichtbar wenn PR gemergt ist
+</li>
+
+<li class="fragment">
+
+**Rendered Manifest Pattern**
+  * zwei Branches/Repos um gerendertes Manifeste zu speichern
+  * zusätzliche Komplexität
+  * z.B. Argo CD Source Hydrator
+</ul>
+---
+
 #  Nötige Schritte
 
 <div class="fragment">
@@ -186,7 +252,7 @@ von Desired Cluster State - main vs change
 
 ---
 
-# Funktionsweise Argo CD Diff Preview
+# Argo CD Diff Preview - Funktionsweise
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
@@ -209,32 +275,34 @@ von Desired Cluster State - main vs change
 
 ---
 
-# Funktionsweise Argo CD Diff Preview
+# Argo CD Diff Preview - Funktionsweise
 
-Beispiel Call
+Beispiel Ausführung
 
-```bash [1-2|4-5|7-16]
-# Get Argo CD Manists current state on main
-git clone https://github.com/repo base-branch --depth 1 -q 
+```bash [2-3|6-7|14-15|16-17]
+# Get Argo CD Manifests current state on main
+git clone https://github.com/dag-andersen/argocd-diff-preview \
+          base-branch --depth 1 -q 
 
-# Get Argo CD Manists on target branch
-git clone https://github.com/repo target-branch --depth 1 -q -b helm-example-3
+# Get Argo CD Manifests on target branch
+git clone https://github.com/dag-andersen/argocd-diff-preview \
+          target-branch --depth 1 -q -b helm-example-3
 
 # Execute Argo CD Diff Preview (e.g. in a container)
 docker run \
-   --network host \
-   -v /var/run/docker.sock:/var/run/docker.sock \
-   -v $(pwd)/output:/output \
-   -v $(pwd)/base-branch:/base-branch \
-   -v $(pwd)/target-branch:/target-branch \
-   -e TARGET_BRANCH=helm-example-3 \
-   -e REPO=dag-andersen/argocd-diff-preview \
-   dagandersen/argocd-diff-preview:v0.2.1
+  --network host \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $(pwd)/output:/output \
+  -v $(pwd)/base-branch:/base-branch \
+  -v $(pwd)/target-branch:/target-branch \
+  -e REPO=dag-andersen/argocd-diff-preview \
+  -e TARGET_BRANCH=helm-example-3 \
+  dagandersen/argocd-diff-preview:v0.2.1
 ```
 
 ---
 
-# Beispieloutput eines Diff Previews
+# Argo CD Diff Preview - Beispiel Output
 
 Interaktives HTML als Pull Request Kommentar
 
@@ -245,7 +313,7 @@ Interaktives HTML als Pull Request Kommentar
 
 ---
 
-# Funktionsweise Argo CD Diff Preview
+# Argo CD Diff Preview - Funktionsweise
 
 <div style="display: flex; align-items: center;" data-markdown>
 
@@ -266,7 +334,7 @@ Interaktives HTML als Pull Request Kommentar
 
 ---
 
-# Funktionsweise Argo CD Diff Preview
+# Argo CD Diff Preview - Funktionsweise
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
@@ -290,7 +358,7 @@ Interaktives HTML als Pull Request Kommentar
 
 ---
 
-# Funktionsweise Argo CD Diff Preview
+# Argo CD Diff Preview - Funktionsweise
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
@@ -315,7 +383,7 @@ Interaktives HTML als Pull Request Kommentar
 
 ---
 
-# Funktionsweise Argo CD Diff Preview
+# Argo CD Diff Preview - Funktionsweise
 
 ### 4. Diff erzeugen
 Vergleich Main vs Target Branch per Argo CD Application:
@@ -325,13 +393,27 @@ Vergleich Main vs Target Branch per Argo CD Application:
 * Geänderte Applications - Geändert zwischen Branches
 * Unveränderte Applications - Unverändert (gefiltert im Output)
 
-<div style="font-size: 0.6em;">
+<div style="font-size: 0.6em; margin-top: 1em">
 
 | File | Description |
 | :--- | :--- |
 | `./output/diff.md` | Markdown diff ... |
 | `./output/diff.html` | HTML diff ... |
 </div>
+
+---
+
+# Argo CD Diff Preview - Multi Repo Support
+
+<div style="font-size: 0.6em;">
+
+| Repository | Contains |
+| :--- | :--- |
+| Application Repo | Argo CD Application and ApplicationSet manifests |
+| Resource Repo | Kubernetes resources (Helm charts, Kustomize overlays, plain YAML) |
+</div>
+
+<img src="assets/ch4_mono_vs_multi_repo.png" style="max-height: 400px; width: auto; object-fit: contain;">
 
 ---
 
@@ -357,50 +439,51 @@ produktiven Cluster absichern, CI Zugriffe
 ## Maintenance | Operations
 Aufwand minimieren
 </div>
+
+---
+
+# Argo CD Installation für Diff Preview
+
+<div style="text-align: left;" class="fragment">
+
+### Ephemeral
+
+* ✅ Kein Setup nötig
+* ✅ Komplette Isolation
+* ✅ Funktioniert mit jedem CI/CD System (und auch lokal)
+* ❌ Langsam (~60 Sekunden Overhead pro Run)
+* ❌ Ressourcenintensiv (erstellt neuen Cluster pro Run)
+
+</div>
+
+<div style="text-align: left;" class="fragment">
+
+### Pre-Installed
+* ✅ Schnelle Ausführung (Overhead nur Gitlab Runner Spin-up-time)
+* ✅ Netzwerk Isolierung (kein Internet Zugriff am Cluster)
+* ✅ Keine Cluster Credentials in CI/CD pipeline (Verwendung Service Account innerhalb des Clusters, Argo CD hat alle Credentials)
+* ❌ Komplexer (braucht Self-hosted Runners + eigenes Argo CD)
+</div>
+
 ---
 
 # Argo CD Pre-installed
 
 ![argocd_diff_preview](assets/ch3_pre_installed_argocd2.png)
+
 ---
 
-# Argo CD Pre-installed
-
-<div style="flex: 3; text-align: left;">
-
-### Ephemeral
-
-* ✅ Zero setup
-* ✅ Complete isolation
-* ✅ Works with any CI/CD (even works on your local machine)
-* ❌ Slow (~60 second overhead per run, ~80 seconds in total)
-* ❌ Resource-intensive (creates a new cluster for each run)
-
-
-### Pre-Installed
-* ✅ Fast execution (eliminates ~60s overhead, ~25 seconds in total)
-* ✅ Network isolation (No need to expose your cluster to the internet)
-* ✅ No cluster credentials in CI/CD pipeline (using) service account from within the cluster and Argo CD has all the credentials)
-* ❌ Complex (requires self-hosted runners + dedicated Argo CD)
-</div>
----
-
-# Argo CD Pre-installed
+# Argo CD Pre-installed - Deployment
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
+  <div style="flex: 3; text-align: left;" class="fragment"> <!-- 33% Breite -->
 
-  <div style="flex: 1;" data-markdown> <!-- .element: class="fragment fade-up" -->
-    <img src="assets/ch3_argo_in_jail.png" style="max-height: 600px; width: auto; object-fit: contain;">
-
-#### Namespaced 
-#### (nicht cluster-wide)
-  </div>
-  <div style="flex: 3; text-align: left;"> <!-- 33% Breite -->
-
-## Openhift GitOps Operator
-* Installieren eigene Instanz auch deklarativ
+## Openshift GitOps Operator
+* Deklarative Installieren der eigenen Instanz
 * Gleiche Version wie produtives Argo CD
-* Upgrades passieren gleichzeitig
+* Upgrades laufen mit
+
+<div class="fragment">
 
 ## Configuration via GitOps
 
@@ -410,6 +493,15 @@ Aufwand minimieren
 * Repo Credential Templates (VSO|ESO)
 * Cluster Credentials (VSO|ESO)
 ...
+</div>
+</div>
+
+  <div style="flex: 1;" data-markdown> <!-- .element: class="fragment fade-up" -->
+    <img src="assets/ch3_argo_in_jail.png" style="max-height: 600px; width: auto; object-fit: contain;">
+
+#### Namespaced 
+#### (nicht cluster-wide)
+  </div>
 </div>
 ---
 
@@ -455,7 +547,7 @@ RUN curl -L -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clie
 
 # Gitlab pipeline template
 
-zentrales, versioniertes Template
+zentral, versioniert
 
 ```yaml [9|10-16|19-25|27-29|31-33|35-41|49-54|56-60|63-64]
 default:
@@ -531,7 +623,7 @@ diff:
 * opt-in (Aktivierung pro Pipeline)
 * Minimale Konfiguration
 
-```yaml
+```yaml []
 stages:
   - argocd-diff-preview
 include:
@@ -547,17 +639,7 @@ diff:
 
 ---
 
-# Diff Preview Repository Varianten
-
-Platform repo/GitOps repo + Application templates (helm/kustomize)
-Platform repo/GitOps repo | Application templates (helm/kustomize)
-
-Creating branches in both or only one of them
-
-
----
-
-# Gitlab Runner execution time
+# Gitlab Runner Execution time
 
 * Gitlab Runner ~10-20 Sekunden
 * Diff Preview ~10 Sekunden
@@ -568,16 +650,32 @@ Creating branches in both or only one of them
 # Live Demo 
 
 ---
-# Use case Kustomize back-to-base refactoring 
-
----
 # Use case Helm envs to value hierarchy refactoring
 
 ---
-# Use case applicationset refactoring Produkt line
+# Use case Produkt line ApplicationSet 
 
 Image
 
 ---
 
-# Zero-Change PR
+# Zero-Change PR - Kustomize back-to-base refactoring 
+
+---
+
+# Fragen?
+
+<div style="display: flex; align-items: center; gap: 50px;" data-markdown>
+
+  <div style="flex: 1;" data-markdown>
+
+  #### Feedback Vortrag
+
+  <img src="assets/ch5_feedback.png" style="max-height: 300px; width: auto; object-fit: contain;">
+  </div>
+  <div style="flex: 1;">
+
+  #### Let's connect
+
+  <img src="assets/ch5_linkedin_qr.png" style="max-height: 300px; width: auto; object-fit: contain;">
+</div>

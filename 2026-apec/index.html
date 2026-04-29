@@ -25,9 +25,13 @@
                     text-transform: none;
             }
       /* create space after lists, problem too close to next chapter */
-      .reveal ul,
-      .reveal ol {
-        margin-bottom: 1em !important;
+      /* Fall 1: h1-h4 folgt direkt auf eine Liste */
+      .reveal ul + :is(h1, h2, h3, h4),
+      .reveal ol + :is(h1, h2, h3, h4),
+      /* Fall 2: Ein Container mit h1-h4 folgt auf eine Liste */
+      .reveal ul + div:has(:is(h1, h2, h3, h4)),
+      .reveal ol + div:has(:is(h1, h2, h3, h4)) {
+        margin-top: 1em !important;
       }
     </style>
 </head>
