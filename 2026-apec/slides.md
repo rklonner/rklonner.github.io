@@ -571,7 +571,7 @@ Aufwand minimieren
 
 Argo CD Diff Preview binary (kein DinD) + Dependencies
 
-```bash [6|13|19|25]
+```bash [6-11|13-17|19-23|25-31]
 FROM registry.access.redhat.com/ubi10-minimal:latest
 
 RUN microdnf install -y curl git tar unzip && \
