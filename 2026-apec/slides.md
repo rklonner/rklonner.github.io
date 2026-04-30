@@ -1,5 +1,5 @@
 # GitOps Visibility
-## Präzise Argo CD diffs für jeden Pull Request 
+## Präzise Argo CD Diffs für jeden Pull Request 
 
 ---
 
@@ -22,29 +22,30 @@
 
   # Über mich
 
-<div style="display: flex; align-items: flex-start; justify-content: flex-start; gap: 20px;" data-markdown>
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px;" data-markdown>
   
-  <div style="flex: 2;"> <!-- 33% Breite -->
+  <div style="flex: 2; font-size: 0.8em;"> <!-- 33% Breite -->
 
   <img src="assets/ch0_robert_klonner.jpeg" class="round-img">
 
-  ### Robert Klonner
+### Robert Klonner
+
+  </div>
+
+  <div style="flex: 3; text-align: left; font-size: 0.8em; display: grid; align-content: center;"
+  <!-- Leerzeile für Markdown -->
+
+### Allgemeines
   * *DevOps Engineer*
   * *Golden Kubestronaut*
   * GitOps, Platform Engineering, CI/CD
-  </div>
 
-  <div style="flex: 3; text-align: left;">
-  <!-- Leerzeile für Markdown -->
+### Erfahrung
+* 7 Jahre DevOps – CI/CD, SDLC Toolchain, Operations
+* 5 Jahre Python Developer - Scripting, Web development, Data processing
 
-### Background
-* 7 years DevOps – CI/CD, SDLC Toolchain, Operations
-* 5 years Python scripting/Web development/Data processing
-* STEM (MINT) studies: Meteorology
-* HTL – Technical Informatics
-
-### Contact
-* ✉ r@klonner.cc
+### Kontakt
+* r@klonner.cc
 * https://www.linkedin.com/in/klonner-robert/
   </div>
 
@@ -222,6 +223,8 @@ spec:
 
   <div style="flex: 2;"> <!-- 33% Breite -->
 
+  - Task: Refactoring List Generator → Git Generator Directories
+
   - Liefert das geänderte ApplicationSet alles wie vorher für staging und production aus?
 
   - Für Verifikation ist Argo CD Objekt Rendering notwendig → Argo Template + Kustomize Template 
@@ -257,7 +260,7 @@ spec:
 
 **Lokales diff von kustomize/helm**
   * `helm template` oder `kustomize build` aufwendig
-  * `argocd app diff` bebntöigt Credentials in CI Pipeline
+  * `argocd app diff` benötigt Credentials in CI Pipeline
 </li>
 
 <li class="fragment">
