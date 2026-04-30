@@ -69,9 +69,9 @@
 
 # DRY in GitOps
 
-* **Application Manifests** → Helm | Kustomize
+* **Resource Manifests** → Helm | Kustomize
 
-* **ArgoCD (Application) Manifests** → ApplicationSets | App of apps
+* **Application Manifests (Argo CD)** → ApplicationSets | App of apps
 
 * 👍 Wartbarkeit und Effizienz
 
@@ -91,11 +91,9 @@
 * Darüberhinaus gibt es mit Argo CD noch einen Layer vor dem Cluster (App of apps, Application Sets)
 
 ---
-# Beispiel - Änderung Replicas
+# Beispiel - Änderung Replicas Kustomize
 
 Task: Erhöhung der Replicas für produktiv (Kostis Kapelonis)
-<!-- 
-<img src="assets/ch1_example_change_replica1.png" style="max-height: 400px; width: auto; object-fit: contain;"> -->
 
 <div class="r-stack">
   <img
@@ -108,13 +106,21 @@ Task: Erhöhung der Replicas für produktiv (Kostis Kapelonis)
     src="assets/ch1_example_change_replica2.png"
     style="max-height: 400px; width: auto; object-fit: contain;"
   />
+
+  <div class="fragment" style="background: #002b36; color: #93a1a1; padding: 20px; max-width: 400px;">
+    <p>We merge PR</p>
+    <p>Argo CD syncs</p>
+    <p>Nothing happens?</p>
+    <p>Debugging... 😕</p>
+  </div>
+
   <div class="fragment" style="width: 70%; min-width: 400px;">
 
 ```bash
   kustomize build envs/prod-eu/
 ```
 
-  ```yaml []
+  ```yaml [9]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -135,6 +141,59 @@ spec:
     style="max-height: 400px; width: auto; object-fit: contain;"
   />
 </div>
+
+---
+# Beispiel - Änderung Replicas Helm
+
+Task: Erhöhung der Replicas für produktiv
+
+<div class="r-stack">
+  <img
+    class="fragment"
+    src="assets/ch1_example2_change_replica1.png"
+    style="max-height: 400px; width: auto; object-fit: contain;"
+  />
+
+  <div class="fragment" style="background: #002b36; color: #93a1a1; padding: 20px; max-width: 400px;">
+    <p>We merge PR</p>
+    <p>Argo CD syncs</p>
+    <p>Nothing happens?</p>
+    <p>Debugging... 😕</p>
+  </div>
+
+  <div class="fragment" style="width: 70%; min-width: 400px;">
+
+```bash
+  helm template my-app/ -f values/prd.yaml
+```
+
+  ```yaml [12]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-namespace
+  labels:
+    helm.sh/chart: myApp-0.1.0
+    app.kubernetes.io/name: myApp
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: myApp
+      app.kubernetes.io/instance: release-name
+  ```
+  </div>
+
+  <img
+    class="fragment"
+    src="assets/ch1_example2_change_replica2.png"
+    style="max-height: 400px; width: auto; object-fit: contain;"
+  />
+</div>
+
 ---
 
 # Beispiel - Änderung Replicas
@@ -165,7 +224,7 @@ spec:
 
   - Liefert das geänderte ApplicationSet alles wie vorher für staging und production aus?
 
-  - Dazu ist Argo CD Objekt Rendering notwendig → Argo Template + Kustomize Template 
+  - Für Verifikation ist Argo CD Objekt Rendering notwendig → Argo Template + Kustomize Template 
   </div>
 </div>
 
@@ -241,7 +300,7 @@ auflösen der Kontexte von Helm | Kustomize + Argo CD Manifest
 <div class="fragment">
 
 ## Diff Visualisierung
-von Desired Cluster State - main vs change 
+für Desired Cluster State - Main vs Change 
 </div>
 
 ---
