@@ -98,7 +98,7 @@ Task: Erhöhung der Replicas für produktiv (Kostis Kapelonis)
 <div class="r-stack">
   <img
     class="fragment"
-    src="assets/ch1_example_change_replica1a.png"
+    src="assets/ch1_example_change_replica1.png"
     style="max-height: 400px; width: auto; object-fit: contain;"
   />
   <img
