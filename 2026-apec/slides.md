@@ -571,7 +571,7 @@ Aufwand minimieren
 
 Argo CD Diff Preview binary (kein DinD) + Dependencies
 
-```bash [6-11|13-17|19-23|25-31]
+```dockerfile [6-11|13-17|19-23|25-31]
 FROM registry.access.redhat.com/ubi10-minimal:latest
 
 RUN microdnf install -y curl git tar unzip && \
@@ -709,19 +709,131 @@ diff:
 ![](assets/ch3_gitlab_runner_performance.png)
 
 ---
+
+# Kapitel 4: Use Cases
+
+---
+
 # Live Demo 
 
 ---
-# Use case Helm envs to value hierarchy refactoring
+
+# Zero-Change PR - Kustomize Refactoring
+
+Änderung die durch alles Overlays promotet wurde → Back-to-Base
+
+<div class="r-stack">
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase0.png"
+    style="max-height: 450px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase1.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase2.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase3.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+</div>
+
+---
+
+# Zero-Change PR - Kustomize Refactoring
+
+Keine Änderung - Erfolgreiches Refactoring!
+
+<iframe data-src="assets/ch4_uc_kustomize_backtobase_diff_preview.html" 
+        style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
+        width="800" height="500">
+</iframe>
+
+---
+
+# Helm Chart per env → Central Chart
+
+* Zentrales Chart + Value Files erstellen
+* Argo CD Manifest auf Chart + Value File umstellen
+
+<div class="r-stack">
+  <img
+    src="assets/ch4_uc_refactor_helm_per_env_to_central_chart1.png"
+    style="max-height: 450px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_refactor_helm_per_env_to_central_chart2.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_refactor_helm_per_env_to_central_chart3.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_refactor_helm_per_env_to_central_chart4.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_refactor_helm_per_env_to_central_chart5.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+</div>
+
+---
+
+# Helm Chart per env → Central Chart
+
+Prd ServiceAccount und Service haben jetzt "dev" Suffix...
+
+<iframe data-src="assets/ch4_uc_helm_per_env_to_central_chart_diff_preview.html" 
+        style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
+        width="800" height="500">
+</iframe>
+
+---
+
+# Helm Chart per env → Central Chart
+
+```yaml [4]
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-dev
+  labels:
+    {{- include "myApp.labels" . | nindent 4 }}
+```
+
+```yaml [5]
+{{- if .Values.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: myapp-dev
+  labels:
+    {{- include "myApp.labels" . | nindent 4 }}
+```
+
+bei zwei Ressources kein Templating in Namen
+
+```
+myapp-{{ .Values.environment }}
+```
 
 ---
 # Use case Produkt line ApplicationSet 
 
 Image
-
----
-
-# Zero-Change PR - Kustomize back-to-base refactoring 
 
 ---
 
