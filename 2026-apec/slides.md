@@ -54,9 +54,9 @@
 ---
 # Agenda
 
-* Kapitel 1: Das Problem
+* Kapitel 1: Das Problem mit GitOps Pull Requests
 
-* Kapitel 2: Eine Lösung
+* Kapitel 2: Eine Lösung für mehr Sichtbarkeit
 
 * Kapitel 3: Produktives Setup 
 
@@ -64,7 +64,7 @@
 
 ---
 
-# Kapitel 1: Das Problem
+# Kapitel 1: Das Problem mit GitOps Pull Requests
 
 ---
 
@@ -81,7 +81,7 @@
 
 ---
 
-# git-diff | rendered-diff | reconciler-diff
+# git-diff | rendered-diff | argocd-diff
 
 * Pull requests - git-diff der Templating Sprache (DRY), nicht gerendert!
 
@@ -89,7 +89,7 @@
 
 * Reviewer könnte rendered-diff manuell generieren → nicht praktikabel + fehleranfällig
 
-* Darüberhinaus gibt es mit Argo CD noch einen Layer vor dem Cluster (App of apps, Application Sets)
+* Mit Argo CD gibt es noch einen Layer vor dem Cluster (App of apps, Application Sets)
 
 ---
 # Beispiel - Änderung Replicas Kustomize
@@ -249,7 +249,7 @@ spec:
 
 ---
 
-# Kapitel 2: Eine Lösung
+# Kapitel 2: Eine Lösung für mehr Sichtbarkeit
 
 ---
 
@@ -309,7 +309,8 @@ für Desired Cluster State - Main vs Change
 ---
 # Gibt es dafür ein fertiges Tool?
 
-![argocd_diff_preview](assets/ch1_argocd_diff_preview_logo.png)
+<img src="assets/ch1_argocd_diff_preview_logo.png"
+     style="max-height: 350px; width: auto; object-fit: contain;">
 <!-- .element: class="fragment" -->
 
 ---
@@ -342,7 +343,7 @@ für Desired Cluster State - Main vs Change
 Beispiel Ausführung
 
 ```bash [2-3|6-7|14-15|16-17]
-# Get Argo CD Manifests current state on main
+# Get Argo CD Manifests on main branch
 git clone https://github.com/dag-andersen/argocd-diff-preview \
           base-branch --depth 1 -q 
 
@@ -364,9 +365,18 @@ docker run \
 
 ---
 
-# Argo CD Diff Preview - Beispiel Output
+# Argo CD Diff Preview - Funktionsweise
 
-Interaktives HTML als Pull Request Kommentar
+Beispiel Ausführung Output
+
+<img src="assets/ch2_argocd_diff_preview_terminal_output.png"
+     style="max-height: 500px; width: auto; object-fit: contain;">
+
+---
+
+# Argo CD Diff Preview - Beispiel Ergebnis
+
+Diff Preview als interaktives HTML als Pull Request Kommentar
 
 <iframe data-src="assets/ch1_argocd_example_diff.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
@@ -542,7 +552,7 @@ Aufwand minimieren
 
 ## Openshift GitOps Operator
 * Deklarative Installieren der eigenen Instanz
-* Gleiche Version wie produtives Argo CD
+* Gleiche Version wie produktives Argo CD
 * Upgrades laufen mit
 
 <div class="fragment">
@@ -718,9 +728,9 @@ diff:
 
 ---
 
-# Zero-Change PR - Kustomize Refactoring
+## Zero-Change PR - Kustomize Refactoring
 
-Änderung die durch alles Overlays promotet wurde → Back-to-Base
+Änderung die durch alle Overlays promotet wurde → Back-to-Base
 
 <div class="r-stack">
   <img
@@ -747,7 +757,7 @@ diff:
 
 ---
 
-# Zero-Change PR - Kustomize Refactoring
+## Zero-Change PR - Kustomize Refactoring
 
 Keine Änderung - Erfolgreiches Refactoring!
 
@@ -758,7 +768,7 @@ Keine Änderung - Erfolgreiches Refactoring!
 
 ---
 
-# Helm Chart per env → Central Chart
+## Dupliziertes Helm Chart per env → Zentrales Chart
 
 * Zentrales Chart + Value Files erstellen
 * Argo CD Manifest auf Chart + Value File umstellen
@@ -792,9 +802,9 @@ Keine Änderung - Erfolgreiches Refactoring!
 
 ---
 
-# Helm Chart per env → Central Chart
+## Dupliziertes Helm Chart per env → Zentrales Chart
 
-Prd ServiceAccount und Service haben jetzt "dev" Suffix...
+Problem: Prd ServiceAccount und Service haben "dev" Suffix...
 
 <iframe data-src="assets/ch4_uc_helm_per_env_to_central_chart_diff_preview.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
@@ -803,7 +813,7 @@ Prd ServiceAccount und Service haben jetzt "dev" Suffix...
 
 ---
 
-# Helm Chart per env → Central Chart
+## Dupliziertes Helm Chart per env → Zentrales Chart
 
 ```yaml [4]
 apiVersion: v1
@@ -824,16 +834,65 @@ metadata:
     {{- include "myApp.labels" . | nindent 4 }}
 ```
 
-bei zwei Ressources kein Templating in Namen
+bei zwei Ressources kein Templating im Namen
 
-```
+```yaml
 myapp-{{ .Values.environment }}
 ```
 
 ---
-# Use case Produkt line ApplicationSet 
+# Use case Product line ApplicationSet 
 
-Image
+<div class="r-stack">
+  <img
+    src="assets/ch4_uc_appset_projects1.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <div class="fragment">
+
+```yaml [10-12|14-17|20|24]
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: project-deployment
+spec:
+  generators:
+    - matrix:
+        generators:
+          # 1) Read list of projects (projects.json) from a configuration repo
+          - git:
+              files:
+                - path: projects.json
+          # 2) For each listed project, discover applications, components, and environments
+          - git:
+              # repo path structure: env/appName/component
+              directories:
+                - path: '{{ .env }}/{{ .app_name }}/*'
+  template:
+    metadata:
+      name: '{{ .values.appName }}-{{ .values.component }}-{{ .values.env }}'
+    spec:
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{ .values.appName }}-{{ .values.component }}-{{ .values.env }}'
+```
+</div>
+
+  <img
+    class="fragment"
+    src="assets/ch4_uc_appset_projects2.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+</div>
+
+---
+
+# asdf
+
+<iframe data-src="assets/ch4_uc_appset_projects.html" 
+        style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
+        width="800" height="500">
+</iframe>
 
 ---
 
