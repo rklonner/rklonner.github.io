@@ -4,7 +4,7 @@
 <style>
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    background-color: #0d1117; /* GitHub Dark Background */
+    background-color: #0d1117;
     color: #c9d1d9;
     margin: 0;
     padding: 20px;
@@ -20,7 +20,7 @@ body {
     width: 910px;
     overflow-x: scroll;
     border-radius: 8px;
-    background: #161b22; /* Dunklerer Container-Hintergrund */
+    background: #161b22;
     scrollbar-width: none;
     margin: 10px 0 10px 0;
     border: 1px solid #30363d;
@@ -30,16 +30,15 @@ table {
     border-spacing: 0px;
     width: 100%;
 }
-/* Zeilen-Logik exakt wie im Original, nur mit Dark-Farben */
 tr.normal_line {
     background: #161b22;
 }
 tr.added_line {
-    background: rgba(46, 160, 67, 0.15); /* GitHub Green */
+    background: rgba(46, 160, 67, 0.15);
     color: #3fb950;
 }
 tr.removed_line {
-    background: rgba(248, 81, 73, 0.15); /* GitHub Red */
+    background: rgba(248, 81, 73, 0.15);
     color: #f85149;
 }
 tr.comment_line {
@@ -60,8 +59,7 @@ pre {
     margin: 0;
     padding-left: 15px;
     padding-right: 15px;
-    /* Verhindert, dass pre-Tags die Zeilenhöhe künstlich aufblähen */
-    line-height: inherit; 
+    line-height: inherit;
 }
 h1 {
     color: #f0f6fc;
@@ -71,289 +69,46 @@ summary {
     cursor: pointer;
 }
 </style>
-
 </head>
 <body>
-<div class="note-text md"><h2 data-sourcepos="1:1-1:23" dir="auto">Argo CD Diff Preview</h2>
-<p data-sourcepos="3:1-3:8" dir="auto">Summary:</p>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="4:1-18:3" data-canonical-lang="yaml" class="code highlight js-syntax-highlight language-yaml code-syntax-highlight-theme" id="code-90"><code><span id="LC1" class="line" lang="yaml"><span class="na">Added (12)</span><span class="pi">:</span></span>
-<span id="LC2" class="line" lang="yaml"><span class="s">+ dummyapp1-apiservice-development (+17)</span></span>
-<span id="LC3" class="line" lang="yaml"><span class="s">+ dummyapp1-apiservice-test (+17)</span></span>
-<span id="LC4" class="line" lang="yaml"><span class="s">+ dummyapp1-backend-development (+17)</span></span>
-<span id="LC5" class="line" lang="yaml"><span class="s">+ dummyapp1-backend-test (+17)</span></span>
-<span id="LC6" class="line" lang="yaml"><span class="s">+ dummyapp1-frontend-development (+17)</span></span>
-<span id="LC7" class="line" lang="yaml"><span class="s">+ dummyapp1-frontend-test (+17)</span></span>
-<span id="LC8" class="line" lang="yaml"><span class="s">+ dummyapp2-apiservice-development (+17)</span></span>
-<span id="LC9" class="line" lang="yaml"><span class="s">+ dummyapp2-apiservice-qss (+17)</span></span>
-<span id="LC10" class="line" lang="yaml"><span class="s">+ dummyapp2-apiservice-test (+17)</span></span>
-<span id="LC11" class="line" lang="yaml"><span class="s">+ dummyapp2-backend-development (+17)</span></span>
-<span id="LC12" class="line" lang="yaml"><span class="s">+ dummyapp2-backend-qss (+17)</span></span>
-<span id="LC13" class="line" lang="yaml"><span class="s">+ dummyapp2-backend-test (+17)</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-90"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-<details>
-<summary>dummyapp1-apiservice-development (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="24:1-24:53">Pod: dummyapp1-apiservice-development/ApiService</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="25:1-43:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-91"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp1-apiservice-development</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: ApiService</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: ApiService</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp1-apiservice-development</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: ApiService</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-91"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp1-apiservice-test (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="50:1-50:46">Pod: dummyapp1-apiservice-test/ApiService</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="51:1-69:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-92"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp1-apiservice-test</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: ApiService</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: ApiService</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp1-apiservice-test</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: ApiService</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-92"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp1-backend-development (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="76:1-76:47">Pod: dummyapp1-backend-development/Backend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="77:1-95:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-93"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp1-backend-development</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Backend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Backend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp1-backend-development</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Backend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-93"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp1-backend-test (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="102:1-102:40">Pod: dummyapp1-backend-test/Backend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="103:1-121:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-94"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp1-backend-test</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Backend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Backend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp1-backend-test</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Backend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-94"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp1-frontend-development (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="128:1-128:49">Pod: dummyapp1-frontend-development/Frontend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="129:1-147:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-95"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp1-frontend-development</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Frontend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Frontend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp1-frontend-development</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Frontend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-95"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp1-frontend-test (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="154:1-154:42">Pod: dummyapp1-frontend-test/Frontend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="155:1-173:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-96"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp1-frontend-test</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Frontend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Frontend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp1-frontend-test</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Frontend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-96"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp2-apiservice-development (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="180:1-180:53">Pod: dummyapp2-apiservice-development/ApiService</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="181:1-199:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-97"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp2-apiservice-development</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: ApiService</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: ApiService</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp2-apiservice-development</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: ApiService</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-97"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp2-apiservice-qss (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="206:1-206:45">Pod: dummyapp2-apiservice-qss/ApiService</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="207:1-225:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-98"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp2-apiservice-qss</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: ApiService</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: ApiService</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp2-apiservice-qss</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: ApiService</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-98"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp2-apiservice-test (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="232:1-232:46">Pod: dummyapp2-apiservice-test/ApiService</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="233:1-251:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-99"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp2-apiservice-test</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: ApiService</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: ApiService</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp2-apiservice-test</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: ApiService</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-99"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp2-backend-development (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="258:1-258:47">Pod: dummyapp2-backend-development/Backend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="259:1-277:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-100"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp2-backend-development</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Backend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Backend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp2-backend-development</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Backend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-100"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp2-backend-qss (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="284:1-284:39">Pod: dummyapp2-backend-qss/Backend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="285:1-303:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-101"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp2-backend-qss</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Backend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Backend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp2-backend-qss</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Backend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-101"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<details>
-<summary>dummyapp2-backend-test (applicationset.yaml)</summary>
-<br>
-<h4 data-sourcepos="310:1-310:40">Pod: dummyapp2-backend-test/Backend</h4>
-<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="311:1-329:3" data-canonical-lang="diff" class="code highlight js-syntax-highlight language-diff code-syntax-highlight-theme" id="code-102"><code><span id="LC1" class="line" lang="diff"><span class="gi">+apiVersion: v1</span></span>
-<span id="LC2" class="line" lang="diff"><span class="gi">+kind: Pod</span></span>
-<span id="LC3" class="line" lang="diff"><span class="gi">+metadata:</span></span>
-<span id="LC4" class="line" lang="diff"><span class="gi">+  creationTimestamp: null</span></span>
-<span id="LC5" class="line" lang="diff"><span class="gi">+  labels:</span></span>
-<span id="LC6" class="line" lang="diff"><span class="gi">+    app.kubernetes.io/instance: dummyapp2-backend-test</span></span>
-<span id="LC7" class="line" lang="diff"><span class="gi">+    run: Backend</span></span>
-<span id="LC8" class="line" lang="diff"><span class="gi">+  name: Backend</span></span>
-<span id="LC9" class="line" lang="diff"><span class="gi">+  namespace: dummyapp2-backend-test</span></span>
-<span id="LC10" class="line" lang="diff"><span class="gi">+spec:</span></span>
-<span id="LC11" class="line" lang="diff"><span class="gi">+  containers:</span></span>
-<span id="LC12" class="line" lang="diff"><span class="gi">+  - image: nginx</span></span>
-<span id="LC13" class="line" lang="diff"><span class="gi">+    name: Backend</span></span>
-<span id="LC14" class="line" lang="diff"><span class="gi">+    resources: {}</span></span>
-<span id="LC15" class="line" lang="diff"><span class="gi">+  dnsPolicy: ClusterFirst</span></span>
-<span id="LC16" class="line" lang="diff"><span class="gi">+  restartPolicy: Always</span></span>
-<span id="LC17" class="line" lang="diff"><span class="gi">+status: {}</span></span></code></pre><copy-code><button type="button" class="btn btn-default btn-md gl-button btn-icon has-tooltip" data-title="Copy to clipboard" aria-label="Copy to clipboard" data-clipboard-target="pre#code-102"><svg><use xlink:href="/assets/icons-41229992eca580608aadaaa9b83b717650b2863442574d0ebb87f859c42a3b6c.svg#copy-to-clipboard"></use></svg></button></copy-code></div>
-</details>
-<p data-sourcepos="332:1-333:81" dir="auto"><em data-sourcepos="332:1-332:7">Stats</em>:
-[Applications: 12], [Full Run: 3s], [Rendering: 3s], [Cluster: 0s], [Argo CD: 1s]</p></div>
+<div class="container">
+<h1>Argo CD Diff Preview</h1>
+<p>Summary:</p>
+<pre>Added (6):
++ dummyapp1-apiservice-development (+17)
++ dummyapp1-apiservice-test (+17)
++ dummyapp1-backend-development (+17)
++ dummyapp1-backend-test (+17)
++ dummyapp1-frontend-development (+17)
++ dummyapp1-frontend-test (+17)</pre>
+<div class="diffs">
+<details><summary>dummyapp1-apiservice-development (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-apiservice-development/ApiService</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-apiservice-development</pre></td></tr><tr class="added_line"><td><pre>+    run: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-apiservice-development</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-apiservice-test (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-apiservice-test/ApiService</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-apiservice-test</pre></td></tr><tr class="added_line"><td><pre>+    run: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-apiservice-test</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-backend-development (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-backend-development/Backend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-backend-development</pre></td></tr><tr class="added_line"><td><pre>+    run: Backend</pre></td></tr><tr class="added_line"><td><pre>+  name: Backend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-backend-development</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Backend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-backend-test (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-backend-test/Backend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-backend-test</pre></td></tr><tr class="added_line"><td><pre>+    run: Backend</pre></td></tr><tr class="added_line"><td><pre>+  name: Backend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-backend-test</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Backend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-frontend-development (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-frontend-development/Frontend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-frontend-development</pre></td></tr><tr class="added_line"><td><pre>+    run: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-frontend-development</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-frontend-test (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-frontend-test/Frontend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-frontend-test</pre></td></tr><tr class="added_line"><td><pre>+    run: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-frontend-test</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+</div>
+<pre>_Stats_:
+[Applications: 6], [Full Run: 3s], [Rendering: 3s], [Cluster: 0s], [Argo CD: 1s]</pre>
+</div>
 </body>
 </html>

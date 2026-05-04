@@ -54,17 +54,17 @@
 ---
 # Agenda
 
-* Kapitel 1: Das Problem mit GitOps Pull Requests
+* Kapitel 1: Das Problem - Templating Layers in GitOps Pull Requests
 
 * Kapitel 2: Eine Lösung für mehr Sichtbarkeit
 
-* Kapitel 3: Produktives Setup 
+* Kapitel 3: Ein produktives Setup 
 
 * Kapitel 4: Use cases 
 
 ---
 
-# Kapitel 1: Das Problem mit GitOps Pull Requests
+# Kapitel 1: Das Problem - Templating Layers in GitOps Pull Requests
 
 ---
 
@@ -489,7 +489,7 @@ Vergleich Main vs Target Branch per Argo CD Application:
 
 ---
 
-# Kapitel 3: Produktives Setup
+# Kapitel 3: Ein produktives Setup
 
 ---
 
@@ -841,7 +841,9 @@ myapp-{{ .Values.environment }}
 ```
 
 ---
-# Use case Product line ApplicationSet 
+# Product line ApplicationSet 
+
+Verifikation für Onboarding eines neuen Projects 
 
 <div class="r-stack">
   <img
@@ -887,7 +889,9 @@ spec:
 
 ---
 
-# asdf
+# Product line ApplicationSet
+
+Projekt und Applikation wurde gefunden und korrekt gerendert
 
 <iframe data-src="assets/ch4_uc_appset_projects.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
