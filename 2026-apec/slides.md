@@ -868,17 +868,17 @@ Projekt und Applikation wurde gefunden und korrekt gerendert
 
 # Zusammenfassung
 
-<div style="text-align: left">
+<div style="text-align: left; font-size: 0.6em; width: fit-content; margin: 0 auto;"">
 
-## Pro
+### Pro
 * weniger failed Deployments durch mehr Sichtbarkeit
 * schnellere Feedback Zyklen
 * Reviewer enablen
 
-## Con
+### Con
 * Initialer Aufwand in CI / Cluster zu integrieren
 
-## Use cases
+### Use cases
 * einfache bis komplexe Template Änderungen ausformulieren
 * Catch templating, syntax, logic errors
 * Audit
