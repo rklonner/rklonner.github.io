@@ -56,7 +56,7 @@
 
 * Kapitel 1: Das Problem mit Templating Ebenen in GitOps
 
-* Kapitel 2: Eine Lösung für mehr Sichtbarkeit durch Diff Previews
+* Kapitel 2: Eine Lösung für mehr Sichtbarkeit
 
 * Kapitel 3: Ein produktives Setup 
 
@@ -95,7 +95,7 @@
 
 # Beispiel - Änderung Replicas Helm
 
-Task: Erhöhung der Replicas für produktiv
+Task: Erhöhung der Replicas für das produktiv System
 
 <div class="r-stack">
   <img
@@ -213,13 +213,11 @@ spec:
 | :--- | :--- | :--- | :--- |
 | **Template** | `argocd appset generate -o yaml` | `kind: Application` | Namen, Ziel-Cluster, Pfade & Parameter-Mapping. |
 | **App-Logik** | `argocd app manifests <NAME>` | `kind: Deployment`, etc. | Der tatsächliche Kubernetes-Code (nur wenn App existiert). |
-| **Tooling** | `helm template` / `kustomize build` | Kubernetes Ressourcen (lokal) | Validierung der reinen Helm/Kustomize-Logik ohne Argo CD. |
-| **Deep Dive** | `argocd-util app generate-manifests` | Finales Manifest (Argo-Style) | Simuliert das serverseitige Rendering inklusive Plugins. |
 </div>
 
 ---
 
-# Kapitel 2: Eine Lösung für mehr Sichtbarkeit durch Diff Previews
+# Kapitel 2: Eine Lösung für mehr Sichtbarkeit
 
 ---
 
@@ -312,7 +310,7 @@ für Desired Cluster State - Main vs Change
 
 Beispiel Ausführung
 
-```bash [2-3|6-7|14-15|16-17]
+```bash [1-3|5-7|9-11,18|14-15|16-17]
 # Get Argo CD Manifests on main branch
 git clone https://github.com/dag-andersen/argocd-diff-preview \
           base-branch --depth 1 -q 
@@ -357,27 +355,6 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
 # Argo CD Diff Preview - Funktionsweise
 
-<div style="display: flex; align-items: center;" data-markdown>
-
-  <div style="flex: 3;"> 
-    <img src="assets/ch1_argocd_diff_preview_application_patching.png" 
-         style="max-height: 600px; width: auto; object-fit: contain;">
-  </div>
-
-  <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
-
-### 1. Application Manifests vorbereiten
-
-* Fetch
-* Select/Filter
-* Patch 
-  </div>
-</div>
-
----
-
-# Argo CD Diff Preview - Funktionsweise
-
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
   <div style="flex: 3;"> 
@@ -387,7 +364,7 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
   <div style="flex: 3; text-align: left;"> <!-- 33% Breite -->
 
-### 2. Argo CD Instanz zum Rendern
+### 1. Argo CD Instanz zum Rendern
 
 #### Ephemeral
 * Kind cluster erstellen
@@ -395,6 +372,27 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
 #### Pre-Installed
 * Bereitstellen einer eigenen Argo CD Instanz
+  </div>
+</div>
+
+---
+
+# Argo CD Diff Preview - Funktionsweise
+
+<div style="display: flex; align-items: center;" data-markdown>
+
+  <div style="flex: 3;"> 
+    <img src="assets/ch1_argocd_diff_preview_application_patching.png" 
+         style="max-height: 550px; width: auto; object-fit: contain;">
+  </div>
+
+  <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
+
+### 2. Application Manifests vorbereiten
+
+* Fetch
+* Select/Filter
+* Patch 
   </div>
 </div>
 
@@ -420,6 +418,7 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
   ```bash
   argocd app manifests <app-name>
   ```
+* Löschen der Applications
   </div>
 </div>
 
@@ -445,7 +444,7 @@ Vergleich Main vs Target Branch per Argo CD Application:
 
 ---
 
-# Argo CD Diff Preview - Multi Repo Support
+<!-- # Argo CD Diff Preview - Multi Repo Support
 
 <div style="font-size: 0.6em;">
 
@@ -455,9 +454,9 @@ Vergleich Main vs Target Branch per Argo CD Application:
 | Resource Repo | Kubernetes resources (Helm charts, Kustomize overlays, plain YAML) |
 </div>
 
-<img src="assets/ch4_mono_vs_multi_repo.png" style="max-height: 400px; width: auto; object-fit: contain;">
+<img src="assets/ch4_mono_vs_multi_repo2.png" style="max-height: 400px; width: auto; object-fit: contain;">
 
----
+--- -->
 
 # Kapitel 3: Ein produktives Setup
 
@@ -630,7 +629,7 @@ diff:
         --repo ${CI_MERGE_REQUEST_PROJECT_PATH} \
         --base-branch main \
         --target-branch ${K8S_MANIFEST_BRANCH} \
-        --argocd-namespace=inh-devops-argocd-diff-preview \
+        --argocd-namespace=argocd-diff-preview \
         ${ARGOCD_DIFF_PREVIEW_FLAGS} \
         --create-cluster=false
     - |
@@ -807,7 +806,7 @@ Keine Änderung - Erfolgreiches Refactoring!
 </iframe>
 
 ---
-# Product line ApplicationSet 
+## Product line ApplicationSet 
 
 Verifikation für Onboarding eines neuen Projects 
 
@@ -855,7 +854,7 @@ spec:
 
 ---
 
-# Product line ApplicationSet
+## Product line ApplicationSet
 
 Projekt und Applikation wurde gefunden und korrekt gerendert
 
@@ -866,24 +865,36 @@ Projekt und Applikation wurde gefunden und korrekt gerendert
 
 ---
 
-# Zusammenfassung
+# Zusammenfassung - Argo CD Diff Previews
 
 <div style="text-align: left; font-size: 0.6em; width: fit-content; margin: 0 auto;"">
 
-### Pro
-* weniger failed Deployments durch mehr Sichtbarkeit
-* schnellere Feedback Zyklen
-* Reviewer enablen
+<div class="fragment">
 
-### Con
-* Initialer Aufwand in CI / Cluster zu integrieren
+## Anwendung
+* einfache bis komplexe Template Änderungen vorab rendern
+* Abfangen von Templating- Syntax- und Logik Fehlern
+* Hilfreich für Refactoring- und Development Aufgaben
+</div>
 
-### Use cases
-* einfache bis komplexe Template Änderungen ausformulieren
-* Catch templating, syntax, logic errors
-* Audit
-* Refactoring
-* Development
+<div class="fragment">
+
+## Pro
+* Verbessert DevEx
+* Sichtbarkeit man bekommt einen "Execution Plan" im PR
+* Verifikation → weniger fehlerhafte Deployments im Cluster
+* Schnellere Feedback Zyklen (verglichen mit "Verifikation" im Dev-Cluster)
+* Minimaler Overhead im "Workflow" (Rendern in Sekundenb und opt-in )
+* Reviewer enablen + detailierteres Audit im PR
+</div>
+
+<div class="fragment">
+
+## Con
+* Initialer Aufwand das Setup in CI + Cluster zu integrieren
+* Applikation wird 2x gerendert (verglichen mit Rendered Manifest Pattern)
+* (Wenn man Diff Previews gewohnt ist fühlt man sich ohne "blind" 😀)
+</div>
 </div>
 ---
 
