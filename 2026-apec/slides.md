@@ -54,9 +54,9 @@
 ---
 # Agenda
 
-* Kapitel 1: Das Problem - Templating Layers in GitOps Pull Requests
+* Kapitel 1: Das Problem mit Templating Ebenen in GitOps
 
-* Kapitel 2: Eine Lösung für mehr Sichtbarkeit
+* Kapitel 2: Eine Lösung für mehr Sichtbarkeit durch Diff Previews
 
 * Kapitel 3: Ein produktives Setup 
 
@@ -64,7 +64,7 @@
 
 ---
 
-# Kapitel 1: Das Problem - Templating Layers in GitOps Pull Requests
+# Kapitel 1: Das Problem mit Templating Ebenen in GitOps
 
 ---
 
@@ -92,58 +92,7 @@
 * Mit Argo CD gibt es noch einen Layer vor dem Cluster (App of apps, Application Sets)
 
 ---
-# Beispiel - Änderung Replicas Kustomize
 
-Task: Erhöhung der Replicas für produktiv (Kostis Kapelonis)
-
-<div class="r-stack">
-  <img
-    class="fragment"
-    src="assets/ch1_example_change_replica1.png"
-    style="max-height: 400px; width: auto; object-fit: contain;"
-  />
-  <img
-    class="fragment"
-    src="assets/ch1_example_change_replica2.png"
-    style="max-height: 400px; width: auto; object-fit: contain;"
-  />
-
-  <div class="fragment" style="background: #002b36; color: #93a1a1; padding: 20px; max-width: 400px;">
-    <p>We merge PR</p>
-    <p>Argo CD syncs</p>
-    <p>Nothing happens?</p>
-    <p>Debugging... 😕</p>
-  </div>
-
-  <div class="fragment" style="width: 70%; min-width: 400px;">
-
-```bash
-  kustomize build envs/prod-eu/
-```
-
-  ```yaml [9]
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    codefresh.io/app: simple-go-app
-  name: prod-eu-simple-deployment
-  namespace: prod
-spec:
-  replicas: 8
-  selector:
-    matchLabels:
-      app: trivial-go-web-app
-  ```
-  </div>
-  <img
-    class="fragment"
-    src="assets/ch1_example_change_replica3.png"
-    style="max-height: 400px; width: auto; object-fit: contain;"
-  />
-</div>
-
----
 # Beispiel - Änderung Replicas Helm
 
 Task: Erhöhung der Replicas für produktiv
@@ -197,6 +146,27 @@ spec:
 
 ---
 
+# Beispiel - Conditionals in Helm Chart
+
+<div style="display: flex; align-items: center;" data-markdown>
+  <div style="flex: 3;"> <!-- 66% Breite -->
+
+  <!-- ![Breites Bild](assets/ch1_example_change_applicationset_portrait.png) -->
+  <img src="assets/ch1_example_helm_configurable_livenessprobe1.png">
+  </div>
+
+  <div style="flex: 2;"> <!-- 33% Breite -->
+
+  - Task: Konfigurierbare Liveness Probe
+
+  - Max: "Bitte schau dir diesen PR an - ist nur eine kleine Änderung an der Liveness Probe..."
+
+  - Reviewer: 🤔
+  </div>
+</div>
+
+---
+
 # Beispiel - Änderung Replicas
 
 #### Möglichkeiten für Diff-Generierung in der CLI
@@ -225,9 +195,9 @@ spec:
 
   - Task: Refactoring List Generator → Git Generator Directories
 
-  - Liefert das geänderte ApplicationSet alles wie vorher für staging und production aus?
+  - Liefert das geänderte ApplicationSet alles wie vorher für staging und production aus? 🤔
 
-  - Für Verifikation ist Argo CD Objekt Rendering notwendig → Argo Template + Kustomize Template 
+  - Für Verifikation ist Argo CD Objekt Rendering notwendig
   </div>
 </div>
 
@@ -249,7 +219,7 @@ spec:
 
 ---
 
-# Kapitel 2: Eine Lösung für mehr Sichtbarkeit
+# Kapitel 2: Eine Lösung für mehr Sichtbarkeit durch Diff Previews
 
 ---
 
@@ -258,7 +228,7 @@ spec:
 <ul>
 <li class="fragment">
 
-**Lokales diff von kustomize/helm**
+**Lokales diff von Kustomize | Helm | Argo CD**
   * `helm template` oder `kustomize build` aufwendig
   * `argocd app diff` benötigt Credentials in CI Pipeline
 </li>
@@ -280,7 +250,7 @@ spec:
 <li class="fragment">
 
 **Rendered Manifest Pattern**
-  * zwei Branches/Repos um gerendertes Manifeste zu speichern
+  * zwei Branches | Repos um gerendertes Manifeste zu speichern
   * zusätzliche Komplexität
   * z.B. Argo CD Source Hydrator
 </ul>
@@ -724,50 +694,6 @@ diff:
 
 ---
 
-# Live Demo 
-
----
-
-## Zero-Change PR - Kustomize Refactoring
-
-Änderung die durch alle Overlays promotet wurde → Back-to-Base
-
-<div class="r-stack">
-  <img
-    class="fragment"
-    src="assets/ch4_uc_kustomize_backtobase0.png"
-    style="max-height: 450px; width: auto; object-fit: contain;"
-  />
-  <img
-    class="fragment"
-    src="assets/ch4_uc_kustomize_backtobase1.png"
-    style="max-height: 500px; width: auto; object-fit: contain;"
-  />
-  <img
-    class="fragment"
-    src="assets/ch4_uc_kustomize_backtobase2.png"
-    style="max-height: 500px; width: auto; object-fit: contain;"
-  />
-  <img
-    class="fragment"
-    src="assets/ch4_uc_kustomize_backtobase3.png"
-    style="max-height: 500px; width: auto; object-fit: contain;"
-  />
-</div>
-
----
-
-## Zero-Change PR - Kustomize Refactoring
-
-Keine Änderung - Erfolgreiches Refactoring!
-
-<iframe data-src="assets/ch4_uc_kustomize_backtobase_diff_preview.html" 
-        style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
-        width="800" height="500">
-</iframe>
-
----
-
 ## Dupliziertes Helm Chart per env → Zentrales Chart
 
 * Zentrales Chart + Value Files erstellen
@@ -841,6 +767,46 @@ myapp-{{ .Values.environment }}
 ```
 
 ---
+
+## Zero-Change PR - Kustomize Refactoring
+
+Änderung die durch alle Overlays promotet wurde → Back-to-Base
+
+<div class="r-stack">
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase0.png"
+    style="max-height: 450px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase1.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase2.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+  <img
+    class="fragment"
+    src="assets/ch4_uc_kustomize_backtobase3.png"
+    style="max-height: 500px; width: auto; object-fit: contain;"
+  />
+</div>
+
+---
+
+## Zero-Change PR - Kustomize Refactoring
+
+Keine Änderung - Erfolgreiches Refactoring!
+
+<iframe data-src="assets/ch4_uc_kustomize_backtobase_diff_preview.html" 
+        style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
+        width="800" height="500">
+</iframe>
+
+---
 # Product line ApplicationSet 
 
 Verifikation für Onboarding eines neuen Projects 
@@ -898,6 +864,27 @@ Projekt und Applikation wurde gefunden und korrekt gerendert
         width="800" height="500">
 </iframe>
 
+---
+
+# Zusammenfassung
+
+<div style="text-align: left">
+
+## Pro
+* weniger failed Deployments durch mehr Sichtbarkeit
+* schnellere Feedback Zyklen
+* Reviewer enablen
+
+## Con
+* Initialer Aufwand in CI / Cluster zu integrieren
+
+## Use cases
+* einfache bis komplexe Template Änderungen ausformulieren
+* Catch templating, syntax, logic errors
+* Audit
+* Refactoring
+* Development
+</div>
 ---
 
 # Fragen?
