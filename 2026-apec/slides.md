@@ -36,13 +36,13 @@
   <!-- Leerzeile für Markdown -->
 
 ### Allgemeines
-  * *DevOps Engineer*
-  * *Golden Kubestronaut*
+  * *DevOps Engineer @ WKO Inhouse GmbH*
+  * *CNCF Golden Kubestronaut*
   * GitOps, Platform Engineering, CI/CD
 
 ### Erfahrung
-* 7 Jahre DevOps – CI/CD, SDLC Toolchain, Operations
-* 5 Jahre Python Developer - Scripting, Web development, Data processing
+* DevOps – CI/CD, SDLC Toolchain, Operations
+* Python Developer - Scripting, Web development, Data processing
 
 ### Kontakt
 * r@klonner.cc
@@ -85,7 +85,7 @@
 
 * Pull requests - git-diff der Templating Sprache (DRY), nicht gerendert!
 
-* Dev lokal getestet, aber keine Info für Reviewer
+* Dev hat Template (vielleicht) lokal gerendert, aber keine Info für Reviewer
 
 * Reviewer könnte rendered-diff manuell generieren → nicht praktikabel + fehleranfällig
 
@@ -224,13 +224,6 @@ spec:
 # Lösungsansätze
 
 <ul>
-<li class="fragment">
-
-**Lokales diff von Kustomize | Helm | Argo CD**
-  * `helm template` oder `kustomize build` aufwendig
-  * `argocd app diff` benötigt Credentials in CI Pipeline
-</li>
-
 <li class="fragment">
 
 **CI Pipeline Diff Funktionalität**
@@ -491,9 +484,8 @@ Aufwand minimieren
 
 * ✅ Kein Setup nötig
 * ✅ Komplette Isolation
-* ✅ Funktioniert mit jedem CI/CD System (und auch lokal)
 * ❌ Langsam (~60 Sekunden Overhead pro Run)
-* ❌ Ressourcenintensiv (erstellt neuen Cluster pro Run)
+* ❌ Credentials in CI/CD pipeline
 
 </div>
 
@@ -501,7 +493,6 @@ Aufwand minimieren
 
 ### Pre-Installed
 * ✅ Schnelle Ausführung (Overhead nur Gitlab Runner Spin-up-time)
-* ✅ Netzwerk Isolierung (kein Internet Zugriff am Cluster)
 * ✅ Keine Cluster Credentials in CI/CD pipeline (Verwendung Service Account innerhalb des Clusters, Argo CD hat alle Credentials)
 * ❌ Komplexer (braucht Self-hosted Runners + eigenes Argo CD)
 </div>
@@ -693,7 +684,7 @@ diff:
 
 ---
 
-## Dupliziertes Helm Chart per env → Zentrales Chart
+## Zero-Change PR - Dupliziertes Helm Chart per env → Zentrales Chart
 
 * Zentrales Chart + Value Files erstellen
 * Argo CD Manifest auf Chart + Value File umstellen
@@ -727,7 +718,7 @@ diff:
 
 ---
 
-## Dupliziertes Helm Chart per env → Zentrales Chart
+## Zero-Change PR - Dupliziertes Helm Chart per env → Zentrales Chart
 
 Problem: Prd ServiceAccount und Service haben "dev" Suffix...
 
@@ -738,16 +729,7 @@ Problem: Prd ServiceAccount und Service haben "dev" Suffix...
 
 ---
 
-## Dupliziertes Helm Chart per env → Zentrales Chart
-
-```yaml [4]
-apiVersion: v1
-kind: Service
-metadata:
-  name: myapp-dev
-  labels:
-    {{- include "myApp.labels" . | nindent 4 }}
-```
+##  Zero-Change PR - Dupliziertes Helm Chart per env → Zentrales Chart
 
 ```yaml [5]
 {{- if .Values.serviceAccount.create -}}
@@ -759,7 +741,7 @@ metadata:
     {{- include "myApp.labels" . | nindent 4 }}
 ```
 
-bei zwei Ressources kein Templating im Namen
+bei einer Ressource kein Templating im Namen
 
 ```yaml
 myapp-{{ .Values.environment }}
@@ -806,7 +788,8 @@ Keine Änderung - Erfolgreiches Refactoring!
 </iframe>
 
 ---
-## Product line ApplicationSet 
+
+## Produktline mit einem ApplicationSet deployen
 
 Verifikation für Onboarding eines neuen Projects 
 
@@ -854,7 +837,7 @@ spec:
 
 ---
 
-## Product line ApplicationSet
+## Produktline mit einem ApplicationSet deployen
 
 Projekt und Applikation wurde gefunden und korrekt gerendert
 
@@ -865,35 +848,36 @@ Projekt und Applikation wurde gefunden und korrekt gerendert
 
 ---
 
-# Zusammenfassung - Argo CD Diff Previews
+## Zusammenfassung - Argo CD Diff Previews
 
-<div style="text-align: left; font-size: 0.6em; width: fit-content; margin: 0 auto;"">
+<div style="text-align: left; font-size: 0.8em; width: fit-content; margin: 0 auto;"">
 
 <div class="fragment">
 
-## Anwendung
-* einfache bis komplexe Template Änderungen vorab rendern
+### Anwendung
+* Einfache bis komplexe Template-Änderungen vorab rendern
 * Abfangen von Templating- Syntax- und Logik Fehlern
 * Hilfreich für Refactoring- und Development Aufgaben
 </div>
 
 <div class="fragment">
 
-## Pro
-* Verbessert DevEx
-* Sichtbarkeit man bekommt einen "Execution Plan" im PR
+### Pro
+* Sichtbarkeit → man bekommt einen "Execution Plan" im PR
 * Verifikation → weniger fehlerhafte Deployments im Cluster
-* Schnellere Feedback Zyklen (verglichen mit "Verifikation" im Dev-Cluster)
-* Minimaler Overhead im "Workflow" (Rendern in Sekundenb und opt-in )
-* Reviewer enablen + detailierteres Audit im PR
+* Schnellere Feedback Zyklen
+* Reviewer enablen + detailliertes Audit im PR
 </div>
 
 <div class="fragment">
 
-## Con
+### Con
 * Initialer Aufwand das Setup in CI + Cluster zu integrieren
-* Applikation wird 2x gerendert (verglichen mit Rendered Manifest Pattern)
-* (Wenn man Diff Previews gewohnt ist fühlt man sich ohne "blind" 😀)
+</div>
+
+<div class="fragment">
+
+"Wer einmal mit Diff Previews gearbeitet hat, möchte die gewonnene Sicherheit nicht mehr missen." 😀
 </div>
 </div>
 ---
@@ -908,9 +892,18 @@ Projekt und Applikation wurde gefunden und korrekt gerendert
 
   <img src="assets/ch5_feedback.png" style="max-height: 300px; width: auto; object-fit: contain;">
   </div>
+
   <div style="flex: 1;">
 
   #### Let's connect
 
   <img src="assets/ch5_linkedin_qr.png" style="max-height: 300px; width: auto; object-fit: contain;">
+  </div>
+
+  <div style="flex: 1;">
+
+  #### I want to try a demo
+
+  <img src="assets/ch5_argocd_diff_preview_demo.png" style="max-height: 300px; width: auto; object-fit: contain;">
+  </div>
 </div>
