@@ -1,0 +1,114 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background-color: #0d1117;
+    color: #c9d1d9;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    margin: auto;
+    width: 910px;
+}
+.diffs {
+    margin: 20px 0 20px 0;
+}
+.diff_container {
+    width: 910px;
+    overflow-x: scroll;
+    border-radius: 8px;
+    background: #161b22;
+    scrollbar-width: none;
+    margin: 10px 0 10px 0;
+    border: 1px solid #30363d;
+}
+table {
+    font-family: monospace;
+    border-spacing: 0px;
+    width: 100%;
+}
+tr.normal_line {
+    background: #161b22;
+}
+tr.added_line {
+    background: rgba(46, 160, 67, 0.15);
+    color: #3fb950;
+}
+tr.removed_line {
+    background: rgba(248, 81, 73, 0.15);
+    color: #f85149;
+}
+tr.comment_line {
+    background: #0d1117;
+    color: #8b949e;
+}
+.resource_header {
+    font-family: monospace;
+    font-size: 14px;
+    color: #8b949e;
+    margin: 15px 0 5px 0;
+    padding: 0;
+}
+.resource_header:first-of-type {
+    margin-top: 10px;
+}
+pre {
+    margin: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+    line-height: inherit;
+}
+h1 {
+    color: #f0f6fc;
+}
+summary {
+    color: #58a6ff;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Argo CD Diff Preview</h1>
+<p>Summary:</p>
+<pre>Added (6):
++ dummyapp1-apiservice-development (+17)
++ dummyapp1-apiservice-test (+17)
++ dummyapp1-backend-development (+17)
++ dummyapp1-backend-test (+17)
++ dummyapp1-frontend-development (+17)
++ dummyapp1-frontend-test (+17)</pre>
+<div class="diffs">
+<details><summary>dummyapp1-apiservice-development (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-apiservice-development/ApiService</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-apiservice-development</pre></td></tr><tr class="added_line"><td><pre>+    run: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-apiservice-development</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-apiservice-test (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-apiservice-test/ApiService</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-apiservice-test</pre></td></tr><tr class="added_line"><td><pre>+    run: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-apiservice-test</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: ApiService</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-backend-development (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-backend-development/Backend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-backend-development</pre></td></tr><tr class="added_line"><td><pre>+    run: Backend</pre></td></tr><tr class="added_line"><td><pre>+  name: Backend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-backend-development</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Backend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-backend-test (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-backend-test/Backend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-backend-test</pre></td></tr><tr class="added_line"><td><pre>+    run: Backend</pre></td></tr><tr class="added_line"><td><pre>+  name: Backend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-backend-test</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Backend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-frontend-development (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-frontend-development/Frontend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-frontend-development</pre></td></tr><tr class="added_line"><td><pre>+    run: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-frontend-development</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+<details><summary>dummyapp1-frontend-test (applicationset.yaml)</summary>
+<h4 class="resource_header">Pod: dummyapp1-frontend-test/Frontend</h4>
+<div class="diff_container"><table>
+<tr class="added_line"><td><pre>+apiVersion: v1</pre></td></tr><tr class="added_line"><td><pre>+kind: Pod</pre></td></tr><tr class="added_line"><td><pre>+metadata:</pre></td></tr><tr class="added_line"><td><pre>+  creationTimestamp: null</pre></td></tr><tr class="added_line"><td><pre>+  labels:</pre></td></tr><tr class="added_line"><td><pre>+    app.kubernetes.io/instance: dummyapp1-frontend-test</pre></td></tr><tr class="added_line"><td><pre>+    run: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+  namespace: dummyapp1-frontend-test</pre></td></tr><tr class="added_line"><td><pre>+spec:</pre></td></tr><tr class="added_line"><td><pre>+  containers:</pre></td></tr><tr class="added_line"><td><pre>+  - image: nginx</pre></td></tr><tr class="added_line"><td><pre>+    name: Frontend</pre></td></tr><tr class="added_line"><td><pre>+    resources: {}</pre></td></tr><tr class="added_line"><td><pre>+  dnsPolicy: ClusterFirst</pre></td></tr><tr class="added_line"><td><pre>+  restartPolicy: Always</pre></td></tr><tr class="added_line"><td><pre>+status: {}</pre></td></tr></table></div></details>
+</div>
+<pre>_Stats_:
+[Applications: 6], [Full Run: 3s], [Rendering: 3s], [Cluster: 0s], [Argo CD: 1s]</pre>
+</div>
+</body>
+</html>
