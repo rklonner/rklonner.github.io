@@ -20,7 +20,7 @@
     }
   </style>
 
-  # Über mich
+  # About me
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 20px;" data-markdown>
   
@@ -35,16 +35,16 @@
   <div style="flex: 3; text-align: left; font-size: 0.8em; display: grid; align-content: center;"
   <!-- Leerzeile für Markdown -->
 
-### Allgemeines
+### Facts
   * *DevOps Engineer @ WKO Inhouse GmbH*
   * *CNCF Golden Kubestronaut*
   * GitOps, Platform Engineering, CI/CD
 
-### Erfahrung
+### Background
 * DevOps – CI/CD, SDLC Toolchain, Operations
 * Python Developer - Scripting, Web development, Data processing
 
-### Kontakt
+### Contact
 * r@klonner.cc
 * https://www.linkedin.com/in/klonner-robert/
   </div>
@@ -54,17 +54,17 @@
 ---
 # Agenda
 
-* Kapitel 1: Das Problem mit Templating Ebenen in GitOps
+* Chapter 1: The problem with templating layers in GitOps
 
-* Kapitel 2: Eine Lösung für mehr Sichtbarkeit
+* Chapter 2: A solution for more visibility
 
-* Kapitel 3: Ein produktives Setup 
+* Chapter 3: A production setup
 
-* Kapitel 4: Use cases 
+* Chapter 4: Use cases 
 
 ---
 
-# Kapitel 1: Das Problem mit Templating Ebenen in GitOps
+# Chapter 1: The problem with templating layers in GitOps
 
 ---
 
@@ -74,28 +74,28 @@
 
 * **Application Manifests (Argo CD)** → ApplicationSets | App of apps
 
-* 👍 Wartbarkeit und Effizienz
+* 👍 Maintainable and efficient
 
-* 👎 Hohe Cognitive Load bei Änderungen → 🤯
+* 👎 High Cognitive Load for changes → 🤯
 
 
 ---
 
 # git-diff | rendered-diff | argocd-diff
 
-* Pull requests - git-diff der Templating Sprache (DRY), nicht gerendert!
+* Pull requests - git-diff of templating language (DRY) - not rendered!
 
-* Dev hat Template (vielleicht) lokal gerendert, aber keine Info für Reviewer
+* Dev maybe rendered template locally but no info for reviewer in PR
 
-* Reviewer könnte rendered-diff manuell generieren → nicht praktikabel + fehleranfällig
+* Reviewer could manually create rendered-diff → not feasible and error prone
 
-* Mit Argo CD gibt es noch einen Layer vor dem Cluster (App of apps, Application Sets)
+* Argo CD is a additional layer before a cluster deployment (Manifests, App of apps, Application Sets)
 
 ---
 
-# Beispiel - Änderung Replicas Helm
+# Example - Change replicas in Helm
 
-Task: Erhöhung der Replicas für das produktiv System
+Task: Increase replicas for a production environment
 
 <div class="r-stack">
   <img
@@ -146,7 +146,7 @@ spec:
 
 ---
 
-# Beispiel - Conditionals in Helm Chart
+# Example - Conditionals in Helm chart
 
 <div style="display: flex; align-items: center;" data-markdown>
   <div style="flex: 3;"> <!-- 66% Breite -->
@@ -157,9 +157,9 @@ spec:
 
   <div style="flex: 2;"> <!-- 33% Breite -->
 
-  - Task: Konfigurierbare Liveness Probe
+  - Task: Enable configureable liveness probes
 
-  - Max: "Bitte schau dir diesen PR an - ist nur eine kleine Änderung an der Liveness Probe..."
+  - Max: "Checkout this PR - it's just a minor change on the liveness probe..."
 
   - Reviewer: 🤔
   </div>
@@ -167,20 +167,18 @@ spec:
 
 ---
 
-# Beispiel - Änderung Replicas
-
-#### Möglichkeiten für Diff-Generierung in der CLI
+# Possibilities for diff generation in the CLI
 
 <div style="font-size: 0.6em;">
 
-| Ebene | Befehl | Was wird gerendert? | Fokus |
+| Layer | Command | What is rendered? | Focus |
 | :--- | :--- | :--- | :--- |
-| **Tooling** | `helm template` / `kustomize build` | Kubernetes Ressourcen (lokal) | Validierung der reinen Helm/Kustomize-Logik ohne Argo CD. |
+| **Tooling** | `helm template` / `kustomize build` | Kubernetes ressources (local) | Validating pure Helm/Kustomize-logic without Argo CD. |
 </div>
 
 ---
 
-# Beispiel - Änderung an ApplicationSet
+# Example - Modifying an ApplicationSet
 
 
 <div style="display: flex; align-items: center;" data-markdown>
@@ -195,80 +193,78 @@ spec:
 
   - Task: Refactoring List Generator → Git Generator Directories
 
-  - Liefert das geänderte ApplicationSet alles wie vorher für staging und production aus? 🤔
+  - Is the ApplicationSet delivering staging and production as before? 🤔
 
-  - Für Verifikation ist Argo CD Objekt Rendering notwendig
+  - Verification would require Argo CD object rendering
   </div>
 </div>
 
 ---
 
-# Beispiel - Änderung an ApplicationSet
-
-#### Möglichkeiten für Diff-Generierung in der CLI
+# Possibilities for diff generation in the CLI
 
 <div style="font-size: 0.6em;">
 
-| Ebene | Befehl | Was wird gerendert? | Fokus |
+| Layer | Command | What is rendered? | Focus |
 | :--- | :--- | :--- | :--- |
-| **Template** | `argocd appset generate -o yaml` | `kind: Application` | Namen, Ziel-Cluster, Pfade & Parameter-Mapping. |
-| **App-Logik** | `argocd app manifests <NAME>` | `kind: Deployment`, etc. | Der tatsächliche Kubernetes-Code (nur wenn App existiert). |
+| **Template** | `argocd appset generate -o yaml` | `kind: Application` | Name, Target-Cluster, Paths & Parameter-Mapping. |
+| **App-Logic** | `argocd app manifests <NAME>` | `kind: Deployment`, etc. | Actual Kubernetes ressources (only when app exists). |
 </div>
 
 ---
 
-# Kapitel 2: Eine Lösung für mehr Sichtbarkeit
+# Chapter 2: A solution for more visibility
 
 ---
 
-# Lösungsansätze
+# Potential approaches for a solution 
 
 <ul>
 <li class="fragment">
 
-**CI Pipeline Diff Funktionalität**
-  * per Pipeline 2x rendern (`helm template | kustomize build`)
-  * ist aber aufwending und unterschiedlich per Tool/Projekt
+**CI Pipeline Diff (`helm template | kustomize build`)**
+  * render two times (`main | change`) in pipeline 
+  * effort and not unform across tool/project
 </li>
 
 <li class="fragment">
 
 **Argo CD Diff in UI**
-  * auto-sync muss deaktiviert sein
-  * Diff erst sichtbar wenn PR gemergt ist
+  * auto-sync must be deactivated
+  * Diff only visible when PR is already merged
 </li>
 
 <li class="fragment">
 
 **Rendered Manifest Pattern**
-  * zwei Branches | Repos um gerendertes Manifeste zu speichern
-  * zusätzliche Komplexität
-  * z.B. Argo CD Source Hydrator
+  * two branches or repos to 'store' rendered manifests
+  * additional complexity
+  * e.g. Argo CD Source Hydrator (alpha feature)
 </ul>
 ---
 
-#  Nötige Schritte
+#  Required steps
 
 <div class="fragment">
 
-## Einbinden in CI Prozess 
-triggern eines CI-Prozesses wie Atlantis für Terraform → nicht lokal
+## Integrate in CI Prozess 
+triggering a CI process like Atlantis for terraform → not local
 </div>
 
 <div class="fragment">
 
-## Rendern aller Templating-Layer
-auflösen der Kontexte von Helm | Kustomize + Argo CD Manifest
+## Rendering all templating layers
+resolving the contexts of Helm | Kustomize + Argo CD manifest
 </div>
 
 <div class="fragment">
 
-## Diff Visualisierung
-für Desired Cluster State - Main vs Change 
+## Visualizing the Diff
+for desired cluster state - main vs change 
 </div>
 
 ---
-# Gibt es dafür ein fertiges Tool?
+# Is there already a tool available?
 
 <img src="assets/ch1_argocd_diff_preview_logo.png"
      style="max-height: 350px; width: auto; object-fit: contain;">
@@ -276,7 +272,7 @@ für Desired Cluster State - Main vs Change
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
@@ -288,20 +284,20 @@ für Desired Cluster State - Main vs Change
 
   <div style="flex: 4; text-align: left;"> <!-- 33% Breite -->
 
-#### Vergleich Desired State von zwei Branches → reproduzierbar
-  * Nicht Live State (Temporärer Drift, Admission webhooks, Sync delays ...)
-  * GitOps == Auto-sync aktiv → Vergleich mit Desired State genügt
+#### Compare desired state of two branches → reproduceable
+  * no live state (temporary drift, admission webhooks, sync delays ...)
+  * GitOps == auto-sync enabled → comparision of desired state is sufficient
 
-#### Rendering mit Argo CD durchführen
-  * Funktionalität sehr umfangreich, nicht sinnvoll außerhalb zu reproduzieren
+#### Performing the rendering with Argo CD
+  * extensive rendering features, not feasible to reproduce in a pipeline
   </div>
 </div>
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
-Beispiel Ausführung
+Example execution
 
 ```bash [1-3|5-7|9-11,18|14-15|16-17]
 # Get Argo CD Manifests on main branch
@@ -326,18 +322,18 @@ docker run \
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
-Beispiel Ausführung Output
+Example output
 
 <img src="assets/ch2_argocd_diff_preview_terminal_output.png"
      style="max-height: 500px; width: auto; object-fit: contain;">
 
 ---
 
-# Argo CD Diff Preview - Beispiel Ergebnis
+# Argo CD Diff Preview - Example output
 
-Diff Preview als interaktives HTML als Pull Request Kommentar
+Diff Preview as interactive HTML within a Pull Request comment
 
 <iframe data-src="assets/ch1_argocd_example_diff.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
@@ -346,7 +342,7 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
@@ -357,20 +353,20 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
   <div style="flex: 3; text-align: left;"> <!-- 33% Breite -->
 
-### 1. Argo CD Instanz zum Rendern
+### 1. Argo CD instance for rendering
 
 #### Ephemeral
-* Kind cluster erstellen
-* Argo CD deployen
+* Create kind cluster
+* Deploying Argo CD
 
 #### Pre-Installed
-* Bereitstellen einer eigenen Argo CD Instanz
+* Providing a dedicated Argo CD instance
   </div>
 </div>
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
 <div style="display: flex; align-items: center;" data-markdown>
 
@@ -381,7 +377,7 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
   <div style="flex: 2; text-align: left;"> <!-- 33% Breite -->
 
-### 2. Application Manifests vorbereiten
+### 2. Preparing application manifests
 
 * Fetch
 * Select/Filter
@@ -391,7 +387,7 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
@@ -404,28 +400,28 @@ Diff Preview als interaktives HTML als Pull Request Kommentar
 
 ### 3. Argo CD Applications deployen
 
-* ApplicationSets und App of Apps auflösen → Applications
-* Rendern der Applications für main und change in Argo CD
-* Applications erstellen aber Sync ist deaktiviert
-* Extrahieren der zwei Varianten
+* Resolving ApplicationSets and App of Apps → Applications
+* Renderning the applications for main and change in Argo CD
+* Creating applications (deactivated sync)
+* Extracting both variants
   ```bash
   argocd app manifests <app-name>
   ```
-* Löschen der Applications
+* Deleting the applications
   </div>
 </div>
 
 ---
 
-# Argo CD Diff Preview - Funktionsweise
+# Argo CD Diff Preview - How it works
 
-### 4. Diff erzeugen
-Vergleich Main vs Target Branch per Argo CD Application:
+### 4. Create Diff
+Compare main vs change branch per Argo CD application:
 
-* Hinzugefügte Applications - Neu im Target Branch
-* Entfernte Applications - Gelöscht im Target Branch
-* Geänderte Applications - Geändert zwischen Branches
-* Unveränderte Applications - Unverändert (gefiltert im Output)
+* Added applications - new in change branch
+* Removed applications - deleted in change branch
+* Modified applications - modified between branches
+* Unchanged applications - unchanged (filtered in output)
 
 <div style="font-size: 0.6em; margin-top: 1em">
 
@@ -437,54 +433,40 @@ Vergleich Main vs Target Branch per Argo CD Application:
 
 ---
 
-<!-- # Argo CD Diff Preview - Multi Repo Support
-
-<div style="font-size: 0.6em;">
-
-| Repository | Contains |
-| :--- | :--- |
-| Application Repo | Argo CD Application and ApplicationSet manifests |
-| Resource Repo | Kubernetes resources (Helm charts, Kustomize overlays, plain YAML) |
-</div>
-
-<img src="assets/ch4_mono_vs_multi_repo2.png" style="max-height: 400px; width: auto; object-fit: contain;">
-
---- -->
-
-# Kapitel 3: Ein produktives Setup
+# Chapter 3: A production setup
 
 ---
 
-# Fokus auf
+# Focus on
 <div class="fragment">
 
 ## Performance
-für Feedback im PR (Sekunden)
+for feedback in PR (seconds)
 </div>
 
 <div class="fragment">
 
 ## Security
-produktiven Cluster absichern, CI Zugriffe
+securing production cluster, least priviledge CI access
 </div>
 
 <div class="fragment">
 
 ## Maintenance | Operations
-Aufwand minimieren
+minimize effort
 </div>
 
 ---
 
-# Argo CD Installation für Diff Preview
+# Argo CD installation for Diff Preview
 
 <div style="text-align: left;" class="fragment">
 
 ### Ephemeral
 
-* ✅ Kein Setup nötig
-* ✅ Komplette Isolation
-* ❌ Langsam (~60 Sekunden Overhead pro Run)
+* ✅ No setup needed
+* ✅ Complete isolation
+* ❌ Slow (~60 seconds overhead per run)
 * ❌ Credentials in CI/CD pipeline
 
 </div>
@@ -492,9 +474,9 @@ Aufwand minimieren
 <div style="text-align: left;" class="fragment">
 
 ### Pre-Installed
-* ✅ Schnelle Ausführung (Overhead nur Gitlab Runner Spin-up-time)
-* ✅ Keine Cluster Credentials in CI/CD pipeline (Verwendung Service Account innerhalb des Clusters, Argo CD hat alle Credentials)
-* ❌ Komplexer (braucht Self-hosted Runners + eigenes Argo CD)
+* ✅ Fast execution (Overhead only for Gitlab Runner spin-up-time)
+* ✅ No cluster credentials in CI pipeline (Using dedicated service account within the cluster, Argo CD manages all credentials)
+* ❌ More complex (needs self-hosted runners + dedicated Argo CD)
 </div>
 
 ---
@@ -511,9 +493,9 @@ Aufwand minimieren
   <div style="flex: 3; text-align: left;" class="fragment"> <!-- 33% Breite -->
 
 ## Openshift GitOps Operator
-* Deklarative Installieren der eigenen Instanz
-* Gleiche Version wie produktives Argo CD
-* Upgrades laufen mit
+* Declarative installation of dedicated instance
+* Some version as production Argo CD
+* Upgrades are in sync
 
 <div class="fragment">
 
@@ -539,7 +521,7 @@ Aufwand minimieren
 
 # Gitlab Runner image
 
-Argo CD Diff Preview binary (kein DinD) + Dependencies
+Argo CD Diff Preview binary (no DinD) + Dependencies
 
 ```dockerfile [6-11|13-17|19-23|25-31]
 FROM registry.access.redhat.com/ubi10-minimal:latest
@@ -579,7 +561,7 @@ RUN curl -L -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clie
 
 # Gitlab pipeline template
 
-zentral, versioniert
+central and versioned
 
 ```yaml [9|10-16|19-25|27-29|31-33|35-41|49-54|56-60|63-64]
 default:
@@ -650,10 +632,10 @@ diff:
 
 ---
 
-# Gitlab pipeline - Diff Preview Aktivierung
+# Gitlab pipeline - Including a Diff Preview
 
-* opt-in (Aktivierung pro Pipeline)
-* Minimale Konfiguration
+* opt-in (activation per pipeline)
+* minimal configuration
 
 ```yaml []
 stages:
@@ -673,21 +655,21 @@ diff:
 
 # Gitlab Runner Execution time
 
-* Gitlab Runner ~10-20 Sekunden
-* Diff Preview ~10 Sekunden
+* Gitlab Runner ~10-20 seconds
+* Diff Preview ~10 seconds
 
 ![](assets/ch3_gitlab_runner_performance.png)
 
 ---
 
-# Kapitel 4: Use Cases
+# Chapter 4: Use Cases
 
 ---
 
-## Zero-Change PR - Dupliziertes Helm Chart per env → Zentrales Chart
+## Zero-Change PR - Duplicated Helm chart per env → Central chart
 
-* Zentrales Chart + Value Files erstellen
-* Argo CD Manifest auf Chart + Value File umstellen
+* Create central chart + value files
+* Modify Argo CD manifest to use chart + value files
 
 <div class="r-stack">
   <img
@@ -718,9 +700,9 @@ diff:
 
 ---
 
-## Zero-Change PR - Dupliziertes Helm Chart per env → Zentrales Chart
+## Zero-Change PR - Duplicated Helm chart per env → Central chart
 
-Problem: Prd ServiceAccount und Service haben "dev" Suffix...
+Issue: Prd ServiceAccount and Service have "dev" suffix...
 
 <iframe data-src="assets/ch4_uc_helm_per_env_to_central_chart_diff_preview.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
@@ -729,7 +711,7 @@ Problem: Prd ServiceAccount und Service haben "dev" Suffix...
 
 ---
 
-##  Zero-Change PR - Dupliziertes Helm Chart per env → Zentrales Chart
+## Zero-Change PR - Duplicated Helm chart per env → Central chart
 
 ```yaml [5]
 {{- if .Values.serviceAccount.create -}}
@@ -741,7 +723,7 @@ metadata:
     {{- include "myApp.labels" . | nindent 4 }}
 ```
 
-bei einer Ressource kein Templating im Namen
+no templating of the name in one ressource
 
 ```yaml
 myapp-{{ .Values.environment }}
@@ -749,9 +731,9 @@ myapp-{{ .Values.environment }}
 
 ---
 
-## Zero-Change PR - Kustomize Refactoring
+## Zero-Change PR - Kustomize refactoring
 
-Änderung die durch alle Overlays promotet wurde → Back-to-Base
+Change that was promoted through all overlays → Back-to-Base
 
 <div class="r-stack">
   <img
@@ -778,9 +760,9 @@ myapp-{{ .Values.environment }}
 
 ---
 
-## Zero-Change PR - Kustomize Refactoring
+## Zero-Change PR - Kustomize refactoring
 
-Keine Änderung - Erfolgreiches Refactoring!
+No change → Successful refactoring!
 
 <iframe data-src="assets/ch4_uc_kustomize_backtobase_diff_preview.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
@@ -789,9 +771,9 @@ Keine Änderung - Erfolgreiches Refactoring!
 
 ---
 
-## Produktline mit einem ApplicationSet deployen
+## Deploying a productline with an ApplicationSet
 
-Verifikation für Onboarding eines neuen Projects 
+Verifying the onboarding of a new project 
 
 <div class="r-stack">
   <img
@@ -837,9 +819,9 @@ spec:
 
 ---
 
-## Produktline mit einem ApplicationSet deployen
+## Deploying a productline with an ApplicationSet
 
-Projekt und Applikation wurde gefunden und korrekt gerendert
+Project and applications are discoved and rendered correctly
 
 <iframe data-src="assets/ch4_uc_appset_projects.html" 
         style="background: #0d1117; border: 1px solid #30363d; border-radius: 6px;" 
@@ -848,41 +830,41 @@ Projekt und Applikation wurde gefunden und korrekt gerendert
 
 ---
 
-## Zusammenfassung - Argo CD Diff Previews
+## Summary - Argo CD Diff Previews
 
 <div style="text-align: left; font-size: 0.8em; width: fit-content; margin: 0 auto;"">
 
 <div class="fragment">
 
-### Anwendung
-* Einfache bis komplexe Template-Änderungen vorab rendern
-* Abfangen von Templating- Syntax- und Logik Fehlern
-* Hilfreich für Refactoring- und Development Aufgaben
+### Use cases
+* Pre-render simple to complex template changes
+* Catch templating- syntax- and logic issues
+* Valuable for refactoring and development tasks
 </div>
 
 <div class="fragment">
 
 ### Pro
-* Sichtbarkeit → man bekommt einen "Execution Plan" im PR
-* Verifikation → weniger fehlerhafte Deployments im Cluster
-* Schnellere Feedback Zyklen
-* Reviewer enablen + detailliertes Audit im PR
+* Visibility → "Execution plan" providing in Pull request
+* Verification → less failed deployments in the cluster
+* Faster feedback cycle
+* Enabling reviewers + detailed audit in Pull request
 </div>
 
 <div class="fragment">
 
 ### Con
-* Initialer Aufwand das Setup in CI + Cluster zu integrieren
+* Initial effort for setup in CI + cluster integration
 </div>
 
 <div class="fragment">
 
-"Wer einmal mit Diff Previews gearbeitet hat, möchte die gewonnene Sicherheit nicht mehr missen." 😀
+"Once you have worked with diff previews, you won't want to miss the added security." 😀
 </div>
 </div>
 ---
 
-# Fragen?
+# Questions?
 
 <div style="display: flex; align-items: center; gap: 50px;" data-markdown>
 
