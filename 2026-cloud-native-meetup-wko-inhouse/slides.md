@@ -494,7 +494,7 @@ minimize effort
 
 ## Openshift GitOps Operator
 * Declarative installation of dedicated instance
-* Some version as production Argo CD
+* Same version as production Argo CD
 * Upgrades are in sync
 
 <div class="fragment">
@@ -514,7 +514,7 @@ minimize effort
     <img src="assets/ch3_argo_in_jail.png" style="max-height: 600px; width: auto; object-fit: contain;">
 
 #### Namespaced 
-#### (nicht cluster-wide)
+#### (not cluster-wide)
   </div>
 </div>
 ---
