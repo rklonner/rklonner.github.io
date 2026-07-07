@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Crossplane in 10 Minutes (Reveal.js)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="dist/theme/moon.css" id="theme">
+  <link rel="stylesheet" href="dist/plugin/highlight/atom-one-dark.css">
+
+  <style>
+    .reveal {
+      font-family: 'JetBrains Mono', 'Fira Mono', 'Menlo', 'Lato', Arial, sans-serif;
+    }
+    .reveal h1 { font-size: 2.2em; }
+    .reveal h2 { font-size: 1.4em; }
+    .reveal h3 { font-size: 1.1em; }
+    .reveal section, .reveal p, .reveal ul, .reveal ol, .reveal li { font-size: 0.9em; }
+    section img { max-width: 90vw; height: auto; }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5 {
+      text-transform: none;
+    }
+    .reveal ul + :is(h1, h2, h3, h4),
+    .reveal ol + :is(h1, h2, h3, h4),
+    .reveal ul + div:has(:is(h1, h2, h3, h4)),
+    .reveal ol + div:has(:is(h1, h2, h3, h4)) {
+      margin-top: 1em !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section data-markdown="slides.md"
+        data-separator="^---$"
+        data-separator-vertical="^--$"
+        data-separator-notes="^Note:"
+        data-charset="utf-8">
+      </section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+  <script src="dist/plugin/markdown.js"></script>
+  <script src="dist/plugin/highlight.js"></script>
+  <script src="dist/plugin/notes.js"></script>
+  <script src="plugin/menu/menu.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      preloadIframes: true,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMenu ],
+      menu: {
+        side: "left",
+        width: '300px',
+        numbers: true,
+        titleSelector: 'h1, h2, h3',
+        hideMissingTitles: false,
+        openOnInit: false,
+        useTextContentForMissingTitles: true
+      }
+    });
+  </script>
+</body>
+</html>
